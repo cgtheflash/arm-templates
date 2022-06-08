@@ -926,7 +926,7 @@
             ],
             "properties": {
                 "virtualNetwork": {
-                    "id": "[resourceId('Microsoft.Network/virtualNetworks', 'vnet-rvbd-eastus')]"
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]"
                 },
                 "registrationEnabled": false
             }
