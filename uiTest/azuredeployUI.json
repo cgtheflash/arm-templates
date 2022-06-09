@@ -1,11 +1,11 @@
- {
+{
 	"$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
-	"handler": "Microsoft.Azure.CreateUIDef",
-	"version": "0.1.2-preview",
-	"parameters": {
-		"basics": [
-			{}
-		],
+    "handler": "Microsoft.Azure.CreateUIDef",
+    "version": "0.1.2-preview",
+    "parameters": {
+        "basics": [
+            {}
+        ],
 		"steps": [
 			{
 				"name": "management",
@@ -126,10 +126,6 @@
 									"Standard_D2s_v3",
 									"Standard_D4s_v3"
 								],
-								"constraints": {
-									"numAvailabilityZonesRequired": 3,
-									"zone": "3"
-								},
 								"options": {
 									"hideDiskTypeFilter": false
 								},
@@ -198,12 +194,10 @@
 						],
 						"visible": "[equals(steps('management').jumpboxDeploy,'Yes')]"
 					}
-				],
-				"visible": true
+				]
 			},
 			{
 				"name": "network",
-				"type": "Microsoft.Common.Section",
 				"label": "Network Configuration",
 				"elements": [
 					{
@@ -442,12 +436,10 @@
 						],
 						"visible": true
 					}
-				],
-				"visible": true
+				]
 			},
 			{
 				"name": "riverbed",
-				"type": "Microsoft.Common.Section",
 				"label": "Riverbed Appliances",
 				"elements": [
 					{
@@ -474,10 +466,6 @@
 									"Standard_D2s_v3",
 									"Standard_D4s_v3"
 								],
-								"constraints": {
-									"numAvailabilityZonesRequired": 3,
-									"zone": "3"
-								},
 								"options": {
 									"hideDiskTypeFilter": false
 								},
@@ -560,10 +548,6 @@
 									"Standard_D2s_v3",
 									"Standard_D4s_v3"
 								],
-								"constraints": {
-									"numAvailabilityZonesRequired": 3,
-									"zone": "3"
-								},
 								"options": {
 									"hideDiskTypeFilter": false
 								},
@@ -629,12 +613,10 @@
 						],
 						"visible": true
 					}
-				],
-				"visible": true
+				]
 			},
 			{
 				"name": "flowLogs",
-				"type": "Microsoft.Common.Section",
 				"label": "Flow Log Collection Configuration",
 				"elements": [
 					{
@@ -798,8 +780,7 @@
 						],
 						"visible": "[equals(steps('flowLogs').nsgFlowLog.nsgFlowLogStorageAccount,'Existing')]"
 					}
-				],
-				"visible": true
+				]
 			}
 		],
 		"outputs": {
