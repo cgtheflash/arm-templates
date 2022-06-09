@@ -830,11 +830,9 @@
 				"nsgFlowLogStorageAccount": "[steps('flowLogs').nsgFlowLog.nsgFlowLogStorageAccount",
 				"newNsgFlowLogStorageAccountName": "[steps('flowLogs').newNsgFlowLogStorageAccount.newNsgFlowLogStorageAccountName",
 				"existingNsgFlowLogStorageAccountName": "[steps('flowLogs').existingNsgFlowLogStorageAccount.existingNsgFlowLogStorageAccountName",
-				"existingStorageAccountResourceGroupName": "[steps('flowLogs').existingNsgFlowLogStorageAccount.existingStorageAccountResourceGroupName"
+				"existingStorageAccountResourceGroupName": "[steps('flowLogs').existingNsgFlowLogStorageAccount.existingStorageAccountResourceGroupName",
+				"location": "[location()]"
 			}
-		},
-		"kind": "ResourceGroup",
-		"location": "[steps('basics').resourceScope.location.name]",
-		"resourceGroupId": "[steps('basics').resourceScope.resourceGroup.id]"
+		}
 	}
 }
