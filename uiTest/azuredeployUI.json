@@ -190,7 +190,7 @@
 									},
 									"constraints": {
 										"required": true,
-										"customPasswordRegex": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{12,}$",
+										"customPasswordRegex": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{12,123}$",
 										"customValidationMessage": "The password must be alphanumeric, contain at least 12 characters, and have at least 1 letter and 1 number."
 									},
 									"options": {
@@ -227,7 +227,7 @@
 									"type": "Microsoft.Common.TextBox",
 									"toolTip": "Enter a name for the Virtual Network.",
 									"label": "Virtual Network Name",
-									"defaultValue": "[concat('vnet-rvbd-', resourceGroup().location)]",
+									"defaultValue": "[concat('vnet-rvbd-', steps('basics').resourceScope.location.name)]",
 									"constraints": {
 										"required": true,
 										"validations": [
@@ -267,7 +267,7 @@
 									"type": "Microsoft.Common.TextBox",
 									"label": "General Subnet Name",
 									"toolTip": "Enter a name for the general subnet.",
-									"defaultValue": "[concat('snet-rvbd-', resourceGroup().location, '-general')]",
+									"defaultValue": "[concat('snet-rvbd-', steps('basics').resourceScope.location.name, '-general')]",
 									"constraints": {
 										"required": true,
 										"validations": [
@@ -299,7 +299,7 @@
 									"type": "Microsoft.Common.TextBox",
 									"label": "Inbound Subnet Name",
 									"toolTip": "Enter a name for the inbound subnet.",
-									"defaultValue": "[concat('snet-rvbd-', resourceGroup().location, '-inbound')]",
+									"defaultValue": "[concat('snet-rvbd-', steps('basics').resourceScope.location.name, '-inbound')]",
 									"constraints": {
 										"required": true,
 										"validations": [
@@ -331,7 +331,7 @@
 									"type": "Microsoft.Common.TextBox",
 									"label": "Outbound Subnet Name",
 									"toolTip": "Enter a name for the outbound subnet.",
-									"defaultValue": "[concat('snet-rvbd-', resourceGroup().location, '-outbound')]",
+									"defaultValue": "[concat('snet-rvbd-', steps('basics').resourceScope.location.name, '-outbound')]",
 									"constraints": {
 										"required": true,
 										"validations": [
@@ -395,7 +395,7 @@
 									"type": "Microsoft.Common.TextBox",
 									"label": "Network Security Group Name",
 									"toolTip": "Enter a name for the Network Security Group",
-									"defaultValue": "[concat('nsg-rvbd-', resourceGroup().location)]",
+									"defaultValue": "[concat('nsg-rvbd-', steps('basics').resourceScope.location.name)]",
 									"constraints": {
 										"required": true,
 										"validations": [
@@ -411,7 +411,7 @@
 									"type": "Microsoft.Common.TextBox",
 									"label": "Application Security Group Name",
 									"toolTip": "Enter a name for the Application Security Group.",
-									"defaultValue": "[concat('asg-rvbd-', resourceGroup().location, '-general')]",
+									"defaultValue": "[concat('asg-rvbd-', steps('basics').resourceScope.location.name, '-general')]",
 									"constraints": {
 										"required": true,
 										"validations": [
@@ -528,7 +528,7 @@
 									},
 									"constraints": {
 										"required": true,
-										"customPasswordRegex": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{12,}$",
+										"customPasswordRegex": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{12,123}$",
 										"customValidationMessage": "The password must be alphanumeric, contain at least 12 characters, and have at least 1 letter and 1 number."
 									},
 									"options": {
@@ -610,7 +610,7 @@
 									},
 									"constraints": {
 										"required": true,
-										"customPasswordRegex": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{12,}$",
+										"customPasswordRegex": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{12,123}$",
 										"customValidationMessage": "The password must be alphanumeric, contain at least 12 characters, and have at least 1 letter and 1 number."
 									},
 									"options": {
@@ -638,7 +638,7 @@
 									"type": "Microsoft.Common.TextBox",
 									"label": "Application Service Plan Name",
 									"toolTip": "Enter a name for the Application Service Plan.",
-									"defaultValue": "[concat('asp-rvbd-flowlogs-function-', resourceGroup().location)]",
+									"defaultValue": "[concat('asp-rvbd-flowlogs-function-', steps('basics').resourceScope.location.name)]",
 									"constraints": {
 										"required": true,
 										"validations": [
@@ -654,7 +654,7 @@
 									"type": "Microsoft.Common.TextBox",
 									"label": "Azure Function Site Name",
 									"toolTip": "Enter a globally unique name for the Azure Function web site.",
-									"defaultValue": "[concat('rvbdflowlog', resourceGroup().location)]",
+									"defaultValue": "[concat('rvbdflowlog', steps('basics').resourceScope.location.name)]",
 									"constraints": {
 										"required": true,
 										"validations": [
