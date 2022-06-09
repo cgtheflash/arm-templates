@@ -424,21 +424,38 @@
 								},
 								{
 									"name": "allowedSourceIpToMgmt",
-									"type": "Microsoft.Common.TextBox",
-									"label": "Networks permitted to manage resources",
-									"defaultValue": "",
-									"toolTip": "Enter network addresses separated by commas that are permitted to manage resources in this deployment.",
-									"placeholder": "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16",
+									"type": "Microsoft.Common.EditableGrid",
+									"ariaLabel": "Enter addresses permitted to manage resources per network",
+									"label": "Netwrok Address",
 									"constraints": {
-										"required": true,
-										"validations": [
+										"width": "Full",
+										"rows": {
+											"count": {
+												"min": 1,
+												"max": 10
+											}
+										},
+										"columns": [
 											{
-												"regex": "^[0-9.,/\n]{7,60}$",
-												"message": "Only 7-60 numeric characters, periods, commas, and forward slashes are allowed."
+												"id": "networkAddress",
+												"header": "Name",
+												"width": "1fr",
+												"element": {
+													"type": "Microsoft.Common.TextBox",
+													"placeholder": "10.0.0.0/8",
+													"constraints": {
+														"required": true,
+														"validations": [
+															{
+																"regex": "^[0-9.,/\n]{7,18}$",
+																"message": "Only 7-18 numeric characters, periods, commas, and forward slashes are allowed."
+															}
+														]
+													}
+												}
 											}
 										]
-									},
-									"visible": true
+									}
 								}
 							],
 							"visible": true
@@ -818,7 +835,7 @@
 				"azureBastionAddress": "[steps('network').azureBastionNetwork.azureBastionAddress",
 				"nsgName": "[steps('network').networkSecurityGroup.nsgName",
 				"asgName": "[steps('network').networkSecurityGroup.asgName",
-				"allowedSourceIpToMgmt": "[steps('network').networkSecurityGroup.allowedSourceIpToMgmt",
+				"allowedSourceIpToMgmt": "[steps('network').networkSecurityGroup.allowedSourceIpToMgmt.networkAddress",
 				"rvbdNetProfilerSize": "[steps('riverbed').netProfiler.rvbdNetProfilerSize",
 				"rvbdNetProfilerName": "[steps('riverbed').netProfiler.rvbdNetProfilerName",
 				"rvbdNetProfilerAdmin": "[steps('riverbed').netProfiler.rvbdNetProfilerAdmin",
