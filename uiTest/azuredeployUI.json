@@ -421,12 +421,19 @@
 											}
 										]
 									}
-								},
+								}
+							]
+						},
+						{
+							"name": "managementNetworks",
+							"type": "Microsoft.Common.Section",
+							"label": "Source Networks Permitted for Management",
+							"elements": [
 								{
 									"name": "allowedSourceIpToMgmt",
 									"type": "Microsoft.Common.EditableGrid",
 									"ariaLabel": "Enter addresses permitted to manage resources per network",
-									"label": "Netwrok Address",
+									"label": "Network Address",
 									"constraints": {
 										"width": "Full",
 										"rows": {
@@ -438,7 +445,7 @@
 										"columns": [
 											{
 												"id": "networkAddress",
-												"header": "Name",
+												"header": "Network Address",
 												"width": "1fr",
 												"element": {
 													"type": "Microsoft.Common.TextBox",
@@ -835,7 +842,7 @@
 				"azureBastionAddress": "[steps('network').azureBastionNetwork.azureBastionAddress",
 				"nsgName": "[steps('network').networkSecurityGroup.nsgName",
 				"asgName": "[steps('network').networkSecurityGroup.asgName",
-				"allowedSourceIpToMgmt": "[steps('network').networkSecurityGroup.allowedSourceIpToMgmt.networkAddress",
+				"allowedSourceIpToMgmt": "[steps('network').managementNetworks.allowedSourceIpToMgmt.networkAddress",
 				"rvbdNetProfilerSize": "[steps('riverbed').netProfiler.rvbdNetProfilerSize",
 				"rvbdNetProfilerName": "[steps('riverbed').netProfiler.rvbdNetProfilerName",
 				"rvbdNetProfilerAdmin": "[steps('riverbed').netProfiler.rvbdNetProfilerAdmin",
