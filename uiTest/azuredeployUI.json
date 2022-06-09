@@ -1,16 +1,16 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
-    "handler": "Microsoft.Azure.CreateUIDef",
-    "version": "0.1.2-preview",
-    "parameters": {
-        "basics": [
-            {}
-        ],
-        "steps": [
+	"$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+	"handler": "Microsoft.Azure.CreateUIDef",
+	"version": "0.1.2-preview",
+	"parameters": {
+		"basics": [
+			{}
+		],
+		"steps": [
 			{
-                "name": "management",
-                "label": "Management Configuration",
-                "elements": [
+				"name": "management",
+				"label": "Management Configuration",
+				"elements": [
 					{
 						"name": "managementInfo",
 						"type": "Microsoft.Common.InfoBox",
@@ -24,7 +24,7 @@
 						"name": "azureBastionDeploy",
 						"type": "Microsoft.Common.OptionsGroup",
 						"label": "Deploy Azure Bastion",
-						"defaultValue": false,
+						"defaultValue": "No",
 						"toolTip": "Selecting 'Yes' will deploy Azure Bastion within the virtual network to securely connect to the Riverbed resources.",
 						"constraints": {
 							"allowedValues": [
@@ -50,7 +50,17 @@
 								"name": "bastionName",
 								"type": "Microsoft.Common.TextBox",
 								"label": "Azure Bastion Hostname",
-								"defaultValue": "bastion"
+								"toolTip": "Enter a name for the Azure Bastion resource.",
+								"defaultValue": "bastion",
+								"constraints": {
+									"required": true,
+									"validations": [
+										{
+											"regex": "^[a-z0-9A-Z-_.]{1,80}$",
+											"message": "Only 1-80 alphanumeric characters, hyphens, underscores, and periods are allowed."
+										}
+									]
+								}
 							}
 						],
 						"visible": "[equals(steps('management').azureBastionDeploy,'Yes')]"
@@ -59,24 +69,24 @@
 						"name": "jumpboxDeploy",
 						"type": "Microsoft.Common.OptionsGroup",
 						"label": "Deploy Jumpbox",
-						"defaultValue": false,
+						"defaultValue": "No",
 						"toolTip": "Selecting 'Yes' will deploy a jumpbox or management VM within the virtual network.",
 						"constraints": {
 							"allowedValues": [
 								{
 									"label": "No",
-									"value": false
+									"value": "No"
 								},
 								{
 									"label": "Yes",
-									"value": true
+									"value": "Yes"
 								}
 							],
 							"required": true
 						},
 						"visible": true
 					},
-                    {
+					{
 						"name": "jumpbox",
 						"type": "Microsoft.Common.Section",
 						"label": "Jumpbox Configuration",
@@ -85,9 +95,8 @@
 								"name": "jumpboxOS",
 								"type": "Microsoft.Common.DropDown",
 								"label": "Windows OS Version",
-								"placeholder": "",
+								"toolTip": "Select the Windows Operating System version for the Jumpbox.",
 								"defaultValue": "2022-datacenter-azure-edition",
-								"toolTip": "",
 								"constraints": {
 									"allowedValues": [
 										{
@@ -111,15 +120,13 @@
 								"name": "jumpboxSize",
 								"type": "Microsoft.Compute.SizeSelector",
 								"label": "Size",
-								"toolTip": "",
+								"toolTip": "Selecting a size for the virtual machine.",
 								"recommendedSizes": [
 									"Standard_B2ms",
 									"Standard_D2s_v3",
 									"Standard_D4s_v3"
 								],
 								"constraints": {
-									"allowedSizes": [],
-									"excludedSizes": [],
 									"numAvailabilityZonesRequired": 3,
 									"zone": "3"
 								},
@@ -139,28 +146,43 @@
 								"name": "jumpboxName",
 								"type": "Microsoft.Common.TextBox",
 								"label": "Jumpbox Hostname",
+								"toolTip": "Enter a hostname for the Jumpbox.",
 								"defaultValue": "rvbd-jumpbox",
 								"constraints": {
 									"required": true,
-									"regex": "^[a-z0-9A-Z]{1,15}$",
-									"message": "Only 1-15 alphanumeric characters are allowed."
+									"validations": [
+										{
+											"regex": "^[a-z0-9A-Z]{1,15}$",
+											"message": "Only 1-15 alphanumeric characters are allowed."
+										}
+									]
 								}
 							},
 							{
 								"name": "jumpboxAdmin",
 								"type": "Microsoft.Common.TextBox",
 								"label": "Jumpbox Admin Username",
-								"defaultValue": "jumpboxAdmin"
+								"toolTip": "Enter an admin username for use with the virtual machine.",
+								"defaultValue": "jumpboxAdmin",
+								"constraints": {
+									"required": true,
+									"validations": [
+										{
+											"regex": "^[a-z0-9A-Z]{1,64}$",
+											"message": "Only 1-64 alphanumeric characters are allowed."
+										}
+									]
+								}
 							},
 							{
 								"name": "jumpboxAdminPassword",
 								"type": "Microsoft.Compute.CredentialsCombo",
+								"toolTip": {
+									"password": "Enter a password for the admin user."
+								},
 								"label": {
 									"password": "Jumpbox Admin Password",
 									"confirmPassword": "Confirm password"
-								},
-								"toolTip": {
-									"password": ""
 								},
 								"constraints": {
 									"required": true,
@@ -176,14 +198,14 @@
 						],
 						"visible": "[equals(steps('management').jumpboxDeploy,'Yes')]"
 					}
-                ],
-                "visible": true
-            },
+				],
+				"visible": true
+			},
 			{
-                "name": "network",
-                "type": "Microsoft.Common.Section",
-                "label": "Network Configuration",
-                "elements": [
+				"name": "network",
+				"type": "Microsoft.Common.Section",
+				"label": "Network Configuration",
+				"elements": [
 					{
 						"name": "networkInfo",
 						"type": "Microsoft.Common.InfoBox",
@@ -201,23 +223,33 @@
 							{
 								"name": "virtualNetworkName",
 								"type": "Microsoft.Common.TextBox",
+								"toolTip": "Enter a name for the Virtual Network.",
 								"label": "Virtual Network Name",
 								"defaultValue": "[concat('vnet-rvbd-', resourceGroup().location)]",
 								"constraints": {
 									"required": true,
-									"regex": "^[a-z0-9A-Z-_.]{2,64}$",
-									"message": "Only 2-64 alphanumeric characters, hyphens, underscores, and periods are allowed."
+									"validations": [
+										{
+											"regex": "^[a-z0-9A-Z-_.]{2,64}$",
+											"message": "Only 2-64 alphanumeric characters, hyphens, underscores, and periods are allowed."
+										}
+									]
 								}
 							},
 							{
 								"name": "virtualNetworkAddress",
 								"type": "Microsoft.Common.TextBox",
 								"label": "Virtual Network Address Prefix",
+								"toolTip": "Enter a network address such as 10.0.0.0/24 for the Virtual Network.",
 								"defaultValue": "10.0.0.0/24",
 								"constraints": {
 									"required": true,
-									"regex": "^[0-9.]{10,18}$",
-									"message": "Enter a network address such as 10.0.0.0/24"
+									"validations": [
+										{
+											"regex": "^[0-9.]{10,18}$",
+											"message": "Enter a network address such as 10.0.0.0/24"
+										}
+									]
 								}
 							}
 						],
@@ -232,66 +264,96 @@
 								"name": "subnetGeneralName",
 								"type": "Microsoft.Common.TextBox",
 								"label": "General Subnet Name",
+								"toolTip": "Enter a name for the general subnet.",
 								"defaultValue": "[concat('snet-rvbd-', resourceGroup().location, '-general')]",
 								"constraints": {
 									"required": true,
-									"regex": "^[a-z0-9A-Z-_.]{1,80}$",
-									"message": "Only 1-80 alphanumeric characters, hyphens, underscores, and periods are allowed."
+									"validations": [
+										{
+											"regex": "^[a-z0-9A-Z-_.]{1,80}$",
+											"message": "Only 1-80 alphanumeric characters, hyphens, underscores, and periods are allowed."
+										}
+									]
 								}
 							},
 							{
 								"name": "subnetGeneralAddress",
 								"type": "Microsoft.Common.TextBox",
 								"label": "General Subnet Address Prefix",
+								"toolTip": "Enter a network address such as 10.0.0.0/24 for the general subnet.",
 								"defaultValue": "10.0.0.0/26",
 								"constraints": {
 									"required": true,
-									"regex": "^[0-9./]{10,18}$",
-									"message": "Enter a network address such as 10.0.0.0/24"
+									"validations": [
+										{
+											"regex": "^[0-9./]{10,18}$",
+											"message": "Enter a network address such as 10.0.0.0/24"
+										}
+									]
 								}
 							},
 							{
 								"name": "subnetInboundName",
 								"type": "Microsoft.Common.TextBox",
 								"label": "Inbound Subnet Name",
+								"toolTip": "Enter a name for the inbound subnet.",
 								"defaultValue": "[concat('snet-rvbd-', resourceGroup().location, '-inbound')]",
 								"constraints": {
 									"required": true,
-									"regex": "^[a-z0-9A-Z-_.]{1,80}$",
-									"message": "Only 1-80 alphanumeric characters, hyphens, underscores, and periods are allowed."
+									"validations": [
+										{
+											"regex": "^[a-z0-9A-Z-_.]{1,80}$",
+											"message": "Only 1-80 alphanumeric characters, hyphens, underscores, and periods are allowed."
+										}
+									]
 								}
 							},
 							{
 								"name": "subnetInboundAddress",
 								"type": "Microsoft.Common.TextBox",
 								"label": "Inbound Subnet Address Prefix",
+								"toolTip": "Enter a network address such as 10.0.0.0/24 for the inbound subnet.",
 								"defaultValue": "10.0.0.64/26",
 								"constraints": {
 									"required": true,
-									"regex": "^[0-9./]{10,18}$",
-									"message": "Enter a network address such as 10.0.0.0/24"
+									"validations": [
+										{
+											"regex": "^[0-9./]{10,18}$",
+											"message": "Enter a network address such as 10.0.0.0/24"
+										}
+									]
 								}
 							},
 							{
 								"name": "subnetOutboundName",
 								"type": "Microsoft.Common.TextBox",
 								"label": "Outbound Subnet Name",
+								"toolTip": "Enter a name for the outbound subnet.",
 								"defaultValue": "[concat('snet-rvbd-', resourceGroup().location, '-outbound')]",
 								"constraints": {
 									"required": true,
-									"regex": "^[a-z0-9A-Z-_.]{1,80}$",
-									"message": "Only 1-80 alphanumeric characters, hyphens, underscores, and periods are allowed."
+									"validations": [
+										{
+											"regex": "^[a-z0-9A-Z-_.]{1,80}$",
+											"message": "Only 1-80 alphanumeric characters, hyphens, underscores, and periods are allowed."
+										}
+									]
 								}
 							},
 							{
 								"name": "subnetOutboundAddress",
 								"type": "Microsoft.Common.TextBox",
 								"label": "Outbound Subnet Address Prefix",
+								"toolTip": "Enter a network address such as 10.0.0.0/24 for the outbound subnet.",
 								"defaultValue": "10.0.0.128/26",
 								"constraints": {
 									"required": true,
-									"regex": "^[0-9./]{10,18}$",
-									"message": "Enter a network address such as 10.0.0.0/24"
+									"validations": [
+										{
+											"regex": "^[0-9./]{10,18}$",
+											"message": "Enter a network address such as 10.0.0.0/24"
+										}
+									]
 								}
 							}
 						],
@@ -306,11 +368,16 @@
 								"name": "azureBastionAddress",
 								"type": "Microsoft.Common.TextBox",
 								"label": "Azure Bastion Subnet Address Prefix",
+								"toolTip": "Enter a network address such as 10.0.0.0/24 for the Azure Bastion subnet.",
 								"defaultValue": "10.0.0.192/26",
 								"constraints": {
 									"required": true,
-									"regex": "^[0-9./]{10,18}$",
-									"message": "Enter a network address such as 10.0.0.0/24"
+									"validations": [
+										{
+											"regex": "^[0-9./]{10,18}$",
+											"message": "Enter a network address such as 10.0.0.0/24"
+										}
+									]
 								}
 							}
 						],
@@ -325,22 +392,32 @@
 								"name": "nsgName",
 								"type": "Microsoft.Common.TextBox",
 								"label": "Network Security Group Name",
+								"toolTip": "Enter a name for the Network Security Group",
 								"defaultValue": "[concat('nsg-rvbd-', resourceGroup().location)]",
 								"constraints": {
 									"required": true,
-									"regex": "^[a-z0-9A-Z-_.]{1,80}$",
-									"message": "Only 1-80 alphanumeric characters, hyphens, underscores, and periods are allowed."
+									"validations": [
+										{
+											"regex": "^[a-z0-9A-Z-_.]{1,80}$",
+											"message": "Only 1-80 alphanumeric characters, hyphens, underscores, and periods are allowed."
+										}
+									]
 								}
 							},
 							{
 								"name": "asgName",
 								"type": "Microsoft.Common.TextBox",
 								"label": "Application Security Group Name",
+								"toolTip": "Enter a name for the Application Security Group.",
 								"defaultValue": "[concat('asg-rvbd-', resourceGroup().location, '-general')]",
 								"constraints": {
 									"required": true,
-									"regex": "^[a-z0-9A-Z-_.]{1,80}$",
-									"message": "Only 1-80 alphanumeric characters, hyphens, underscores, and periods are allowed."
+									"validations": [
+										{
+											"regex": "^[a-z0-9A-Z-_.]{1,80}$",
+											"message": "Only 1-80 alphanumeric characters, hyphens, underscores, and periods are allowed."
+										}
+									]
 								}
 							},
 							{
@@ -352,27 +429,27 @@
 								"placeholder": "10.0.0.0/8 \n172.16.0.0/12 \n192.168.0.0/16",
 								"multiLine": true,
 								"constraints": {
-								"required": true,
-								"validations": [
-									{
-									"regex": "^[0-9./\n]{10,60}$",
-									"message": "Only 10-60 numeric characters, periods, spaces and forward slashes are allowed."
-									}
-								]
+									"required": true,
+									"validations": [
+										{
+											"regex": "^[0-9./\n]{10,60}$",
+											"message": "Only 10-60 numeric characters, periods, spaces and forward slashes are allowed."
+										}
+									]
 								},
 								"visible": true
 							}
 						],
 						"visible": true
 					}
-                ],
-                "visible": true
-            },
+				],
+				"visible": true
+			},
 			{
-                "name": "riverbed",
-                "type": "Microsoft.Common.Section",
-                "label": "Riverbed Appliances",
-                "elements": [
+				"name": "riverbed",
+				"type": "Microsoft.Common.Section",
+				"label": "Riverbed Appliances",
+				"elements": [
 					{
 						"name": "riverbedInfo",
 						"type": "Microsoft.Common.InfoBox",
@@ -391,15 +468,13 @@
 								"name": "rvbdNetProfilerSize",
 								"type": "Microsoft.Compute.SizeSelector",
 								"label": "Size",
-								"toolTip": "",
+								"toolTip": "Select a size for the Riverbed Net Profiler virtual machine.",
 								"recommendedSizes": [
 									"Standard_B2ms",
 									"Standard_D2s_v3",
 									"Standard_D4s_v3"
 								],
 								"constraints": {
-									"allowedSizes": [],
-									"excludedSizes": [],
 									"numAvailabilityZonesRequired": 3,
 									"zone": "3"
 								},
@@ -418,23 +493,43 @@
 							{
 								"name": "rvbdNetProfilerName",
 								"type": "Microsoft.Common.TextBox",
-								"label": "Riverbed Net Profiler Hostname"
+								"label": "Riverbed Net Profiler Hostname",
+								"toolTip": "Enter a host name for the Net Profiler virtual machine.",
+								"constraints": {
+									"required": true,
+									"validations": [
+										{
+											"regex": "^[a-z0-9A-Z]{1,64}$",
+											"message": "Only 1-64 alphanumeric characters are allowed."
+										}
+									]
+								}
 							},
 							{
 								"name": "rvbdNetProfilerAdmin",
 								"type": "Microsoft.Common.TextBox",
 								"label": "Net Profiler Admin Username",
-								"defaultValue": "mazu"
+								"toolTip": "Enter an admin username for the Net Profiler virtual machine.",
+								"defaultValue": "mazu",
+								"constraints": {
+									"required": true,
+									"validations": [
+										{
+											"regex": "^[a-z0-9A-Z]{1,64}$",
+											"message": "Only 1-64 alphanumeric characters are allowed."
+										}
+									]
+								}
 							},
 							{
 								"name": "rvbdNetProfilerAdminPassword",
 								"type": "Microsoft.Compute.CredentialsCombo",
+								"toolTip": {
+									"password": "Enter a password for the admin user account."
+								},
 								"label": {
 									"password": "Net Profiler Admin Password",
 									"confirmPassword": "Confirm password"
-								},
-								"toolTip": {
-									"password": ""
 								},
 								"constraints": {
 									"required": true,
@@ -459,15 +554,13 @@
 								"name": "rvbdFlowGatewaySize",
 								"type": "Microsoft.Compute.SizeSelector",
 								"label": "Size",
-								"toolTip": "",
+								"toolTip": "Select a size for the Riverbed Flow Gateway virtual machine.",
 								"recommendedSizes": [
 									"Standard_B2ms",
 									"Standard_D2s_v3",
 									"Standard_D4s_v3"
 								],
 								"constraints": {
-									"allowedSizes": [],
-									"excludedSizes": [],
 									"numAvailabilityZonesRequired": 3,
 									"zone": "3"
 								},
@@ -486,23 +579,41 @@
 							{
 								"name": "rvbdFlowGatewayName",
 								"type": "Microsoft.Common.TextBox",
-								"label": "Riverbed Flow Gateway Hostname"
+								"label": "Riverbed Flow Gateway Hostname",
+								"toolTip": "Enter a hostname for the Riverbed Flow Gateway virtual machine.",
+								"constraints": {
+									"required": true,
+									"validations": [
+										{
+											"regex": "^[a-z0-9A-Z]{1,64}$",
+											"message": "Only 1-64 alphanumeric characters are allowed."
+										}
+									]
+								}
 							},
 							{
 								"name": "rvbdFlowGatewayAdmin",
 								"type": "Microsoft.Common.TextBox",
 								"label": "Flow Gateway Admin Username",
-								"defaultValue": "mazu"
+								"toolTip": "Enter an admin username for the virtual machine.",
+								"defaultValue": "mazu",
+								"constraints": {
+									"required": true,
+									"validations": [
+										{
+											"regex": "^[a-z0-9A-Z]{1,64}$",
+											"message": "Only 1-64 alphanumeric characters are allowed."
+										}
+									]
+								}
 							},
 							{
 								"name": "rvbdFlowGatewayAdminPassword",
 								"type": "Microsoft.Compute.CredentialsCombo",
+								"toolTip": {"password": "Enter a password for the admin username."},
 								"label": {
 									"password": "Flow Gateway Admin Password",
 									"confirmPassword": "Confirm password"
-								},
-								"toolTip": {
-									"password": ""
 								},
 								"constraints": {
 									"required": true,
@@ -518,15 +629,15 @@
 						],
 						"visible": true
 					}
-                ],
-                "visible": true
-            },
+				],
+				"visible": true
+			},
 			{
-                "name": "flowLogs",
-                "type": "Microsoft.Common.Section",
-                "label": "Flow Log Collection Configuration",
-                "elements": [
-                    {
+				"name": "flowLogs",
+				"type": "Microsoft.Common.Section",
+				"label": "Flow Log Collection Configuration",
+				"elements": [
+					{
 						"name": "function",
 						"type": "Microsoft.Common.Section",
 						"label": "Azure Function Configuration",
@@ -535,33 +646,48 @@
 								"name": "appServicePlanName",
 								"type": "Microsoft.Common.TextBox",
 								"label": "Application Service Plan Name",
+								"toolTip": "Enter a name for the Application Service Plan.",
 								"defaultValue": "[concat('asp-rvbd-flowlogs-function-', resourceGroup().location)]",
 								"constraints": {
 									"required": true,
-									"regex": "^[a-z0-9A-Z-_.]{1,80}$",
-									"message": "Only 1-80 alphanumeric characters, hyphens, underscores, and periods are allowed."
+									"validations": [
+										{
+											"regex": "^[a-z0-9A-Z-_.]{1,80}$",
+											"message": "Only 1-80 alphanumeric characters, hyphens, underscores, and periods are allowed."
+										}
+									]
 								}
 							},
 							{
 								"name": "siteName",
 								"type": "Microsoft.Common.TextBox",
 								"label": "Azure Function Site Name",
+								"toolTip": "Enter a globally unique name for the Azure Function web site.",
 								"defaultValue": "[concat('rvbdflowlog', resourceGroup().location)]",
 								"constraints": {
 									"required": true,
-									"regex": "^[a-z0-9A-Z-_]{1,32}$",
-									"message": "Only 1-80 alphanumeric characters, hyphens, and underscores are allowed. The name must be globally unique"
+									"validations": [
+										{
+											"regex": "^[a-z0-9A-Z-_]{1,32}$",
+											"message": "Only 1-80 alphanumeric characters, hyphens, and underscores are allowed. The name must be globally unique"
+										}
+									]
 								}
 							},
 							{
 								"name": "functionStorageAccountName",
 								"type": "Microsoft.Common.TextBox",
 								"label": "Azure Function Storage Account Name Prefix",
+								"toolTip": "Enter a globally unique name for the Storage Account.",
 								"defaultValue": "rvbfunction",
 								"constraints": {
 									"required": true,
-									"regex": "^[a-z0-9A-Z]{1,11}$",
-									"message": "Only 1-11 lower characters alphanumeric characters. A unique string will be appended to the name you provide to assure the name is globally unique"
+									"validations": [
+										{
+											"regex": "^[a-z0-9A-Z]{1,11}$",
+											"message": "Only 1-11 lower characters alphanumeric characters. A unique string will be appended to the name you provide to assure the name is globally unique"
+										}
+									]
 								}
 							}
 						],
@@ -576,16 +702,22 @@
 								"name": "nsgFlowLogName",
 								"type": "Microsoft.Common.TextBox",
 								"label": "NSG Flow Logs Name",
+								"toolTip": "Enter a name for the NSG Flow Logs resource.",
 								"constraints": {
 									"required": true,
-									"regex": "^[a-z0-9A-Z-_]{2,80}$",
-									"message": "Only 2-80 alphanumeric characters, hyphens, and underscores are allowed."
+									"validations": [
+										{
+											"regex": "^[a-z0-9A-Z-_]{2,80}$",
+											"message": "Only 2-80 alphanumeric characters, hyphens, and underscores are allowed."
+										}
+									]
 								}
 							},
 							{
 								"name": "nsgFlowLogStorageAccount",
 								"type": "Microsoft.Common.OptionsGroup",
 								"label": "NSG Flow Log Storage Account",
+								"toolTip": "Select whether to use an existing storage account or create a new one for use with the NSG Flow Logs.", 
 								"defaultValue": "New",
 								"toolTip": "Selecting 'New' will deploy a new storage account for NSG Flow Logs. Selecting 'Existing' will display fields for using an existing storage account.",
 								"constraints": {
@@ -597,7 +729,7 @@
 										{
 											"label": "Existing",
 											"value": "Existing"
-										}										
+										}
 									],
 									"required": true
 								},
@@ -611,15 +743,19 @@
 						"type": "Microsoft.Common.Section",
 						"label": "New Flow Logs Storage Account Configuration",
 						"elements": [
-							
 							{
 								"name": "newNsgFlowLogStorageAccountName",
 								"type": "Microsoft.Common.TextBox",
-								"label": "New Storage Account Name",
+								"label": "New Storage Account Name Prefix",
+								"toolTip": "Enter between 1 and 5 characters to be used a prefix for the storage account name. The region and a unique string will append the prefix to create a globally unique name. ",
 								"constraints": {
 									"required": true,
-									"regex": "^[a-z0-9]{3,24}$",
-									"message": "Only 3-24 lower case alphanumeric characters are allowed."
+									"validations": [
+										{
+											"regex": "^[a-z0-9]{1,5}$",
+											"message": "Only 1-5 lower case alphanumeric characters are allowed."
+										}
+									]
 								}
 							}
 						],
@@ -630,36 +766,45 @@
 						"type": "Microsoft.Common.Section",
 						"label": "Existing Flow Logs Storage Account Configuration",
 						"elements": [
-							
 							{
 								"name": "existingNsgFlowLogStorageAccountName",
 								"type": "Microsoft.Common.TextBox",
 								"label": "Existing Storage Account Name",
+								"toolTip": "Enter the name for the existing Storage Account to be used with the NSG Flow Logs.",
 								"constraints": {
 									"required": true,
-									"regex": "^[a-z0-9]{3,24}$",
-									"message": "Only 3-24 lower case alphanumeric characters are allowed."
+									"validations": [
+										{
+											"regex": "^[a-z0-9]{3,24}$",
+											"message": "Only 3-24 lower case alphanumeric characters are allowed."
+										}
+									]
 								}
 							},
 							{
 								"name": "existingStorageAccountResourceGroupName",
 								"type": "Microsoft.Common.TextBox",
 								"label": "Existing Storage Account Resource Group",
+								"toolTip": "Enter the Resource Group name that the existing Storage Account is in.",
 								"constraints": {
 									"required": true,
-									"regex": "^[a-z0-9A-Z-_]{1,90}$",
-									"message": "Only 1-90 alphanumeric characters, hyphens, and underscores are allowed. The name must be globally unique"
+									"validations": [
+										{
+											"regex": "^[a-z0-9A-Z-_]{1,90}$",
+											"message": "Only 1-90 alphanumeric characters, hyphens, and underscores are allowed. The name must be globally unique"
+										}
+									]
 								}
 							}
 						],
 						"visible": "[equals(steps('flowLogs').nsgFlowLog.nsgFlowLogStorageAccount,'Existing')]"
 					}
-                ],
-                "visible": true
-            }
-        ],
-        "outputs": {
-            "deployBastion": "[steps('management').azureBastionDeploy]",
+				],
+				"visible": true
+			}
+		],
+		"outputs": {
+			"deployBastion": "[steps('management').azureBastionDeploy]",
 			"bastionName": "[steps('management').azureBastion.bastionName]",
 			"deployJumpbox": "[steps('management').jumpboxDeploy]",
 			"jumpboxName": "[steps('management').jumpbox.jumpboxName]",
@@ -694,8 +839,8 @@
 			"nsgFlowLogStorageAccount": "[steps('flowLogs').nsgFlowLog.nsgFlowLogStorageAccount",
 			"newNsgFlowLogStorageAccountName": "[steps('flowLogs').newNsgFlowLogStorageAccount.newNsgFlowLogStorageAccountName",
 			"existingNsgFlowLogStorageAccountName": "[steps('flowLogs').existingNsgFlowLogStorageAccount.existingNsgFlowLogStorageAccountName",
-			"existingStorageAccountResourceGroupName": "[steps('flowLogs').existingStorageAccount.existingStorageAccountResourceGroupName",
-            "location": "[location()]"
-        }
-    }
+			"existingStorageAccountResourceGroupName": "[steps('flowLogs').existingNsgFlowLogStorageAccount.existingStorageAccountResourceGroupName",
+			"location": "[location()]"
+		}
+	}
 }
