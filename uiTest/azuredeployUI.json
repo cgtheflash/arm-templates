@@ -1,4 +1,4 @@
-{
+ {
 	"$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
 	"handler": "Microsoft.Azure.CreateUIDef",
 	"version": "0.1.2-preview",
@@ -717,7 +717,6 @@
 								"name": "nsgFlowLogStorageAccount",
 								"type": "Microsoft.Common.OptionsGroup",
 								"label": "NSG Flow Log Storage Account",
-								"toolTip": "Select whether to use an existing storage account or create a new one for use with the NSG Flow Logs.", 
 								"defaultValue": "New",
 								"toolTip": "Selecting 'New' will deploy a new storage account for NSG Flow Logs. Selecting 'Existing' will display fields for using an existing storage account.",
 								"constraints": {
