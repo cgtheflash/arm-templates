@@ -4,7 +4,10 @@
     "version": "0.1.2-preview",
     "parameters": {
         "basics": [
-            {}
+            {
+				"name": "Riverbed Net Profiler and Flow Gateway with Virtual Network",
+				"type": "Microsoft.Common.TextBlock"
+			}
         ],
 		"steps": [
 			{
@@ -421,7 +424,6 @@
 								"defaultValue": "",
 								"toolTip": "Use 1-60 alphanumeric characters, hyphens, spaces, periods, and colons.",
 								"placeholder": "10.0.0.0/8 \n172.16.0.0/12 \n192.168.0.0/16",
-								"multiLine": true,
 								"constraints": {
 									"required": true,
 									"validations": [
