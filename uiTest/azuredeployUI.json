@@ -3,7 +3,7 @@
 	"view": {
 		"kind": "Form",
 		"properties": {
-			"title": "Riverbed deployment wizard",
+			"title": "Web App deployment wizard",
 			"steps": [
 				{
 					"name": "basics",
@@ -12,7 +12,20 @@
 						{
 							"name": "resourceScope",
 							"type": "Microsoft.Common.ResourceScope"
-						}
+						},
+						{
+                            "name": "location",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Location",
+                            "defaultValue": "[resourceGroup().location]",
+                            "toolTip": "Enter the location for the deployment of all resources.",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": ""
+                            },
+                            "visible": true
+                        }
 					]
 				},
 				{
@@ -833,7 +846,7 @@
 				"existingStorageAccountResourceGroupName": "[steps('flowLogs').existingNsgFlowLogStorageAccount.existingStorageAccountResourceGroupName"
 			},
 			"kind": "ResourceGroup",
-			"location": "[steps('basics').resourceScope.resourceGroup().location]",
+			"location": "[steps('basics').resourceScope.location.name]",
 			"resourceGroupId": "[steps('basics').resourceScope.resourceGroup.id]"
 		}
 	}
