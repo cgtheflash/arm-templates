@@ -127,7 +127,11 @@
                     "deleteOption": "Detach",
                     "caching": "ReadWrite",
                     "writeAcceleratorEnabled": false,
-                    "name": "rvb-flowgateway-1-datadisk-0"
+                    "id": null,
+                    "name": "rvb-flowgateway-1-datadisk-0",
+                    "storageAccountType": null,
+                    "diskSizeGB": null,
+                    "diskEncryptionSet": null
                 }
             ],
             "metadata": {
@@ -161,7 +165,11 @@
                     "deleteOption": "Detach",
                     "caching": "ReadWrite",
                     "writeAcceleratorEnabled": false,
-                    "name": "rvb-netprofiler-DataDisk0"
+                    "id": null,
+                    "name": "rvb-netprofiler-DataDisk0",
+                    "storageAccountType": null,
+                    "diskSizeGB": null,
+                    "diskEncryptionSet": null
                 },
                 {
                     "lun": 1,
@@ -169,7 +177,11 @@
                     "deleteOption": "Detach",
                     "caching": "ReadWrite",
                     "writeAcceleratorEnabled": false,
-                    "name": "rvb-netprofiler-DataDisk1"
+                    "id": null,
+                    "name": "rvb-netprofiler-DataDisk1",
+                    "storageAccountType": null,
+                    "diskSizeGB": null,
+                    "diskEncryptionSet": null
                 }
             ],
             "metadata": {
@@ -1047,6 +1059,7 @@
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetGeneralName'))]",
                 "[resourceId('Microsoft.Network/applicationSecurityGroups', parameters('asgName'))]"
             ],
             "properties": {
@@ -1080,6 +1093,7 @@
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetGeneralName'))]",
                 "[resourceId('Microsoft.Network/applicationSecurityGroups', parameters('asgName'))]"
             ],
             "properties": {
@@ -1113,6 +1127,7 @@
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetGeneralName'))]",
                 "[resourceId('Microsoft.Network/applicationSecurityGroups', parameters('asgName'))]"
             ],
             "properties": {
