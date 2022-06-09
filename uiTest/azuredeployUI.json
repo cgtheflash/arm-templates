@@ -3,7 +3,7 @@
 	"view": {
 		"kind": "Form",
 		"properties": {
-			"title": "Web App deployment wizard",
+			"title": "Riverbed deployment wizard",
 			"steps": [
 				{
 					"name": "basics",
@@ -833,7 +833,7 @@
 				"existingStorageAccountResourceGroupName": "[steps('flowLogs').existingNsgFlowLogStorageAccount.existingStorageAccountResourceGroupName"
 			},
 			"kind": "ResourceGroup",
-			"location": "[resourceGroup().location]",
+			"location": "[steps('basics').resourceScope.resourceGroup().location]",
 			"resourceGroupId": "[steps('basics').resourceScope.resourceGroup.id]"
 		}
 	}
