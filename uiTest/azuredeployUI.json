@@ -433,8 +433,8 @@
 										"required": true,
 										"validations": [
 											{
-												"regex": "^[0-9./\n]{7,60}$",
-												"message": "Only 10-60 numeric characters, periods, spaces and forward slashes are allowed."
+												"regex": "^[0-9.,/\n]{7,60}$",
+												"message": "Only 7-60 numeric characters, periods, spaces and forward slashes are allowed."
 											}
 										]
 									},
