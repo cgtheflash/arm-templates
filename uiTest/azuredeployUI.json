@@ -787,32 +787,14 @@
 							"elements": [
 								{
 									"name": "existingNsgFlowLogStorageAccountName",
-									"type": "Microsoft.Common.TextBox",
-									"label": "Existing Storage Account Name",
-									"toolTip": "Enter the name for the existing Storage Account to be used with the NSG Flow Logs.",
-									"constraints": {
-										"required": true,
-										"validations": [
-											{
-												"regex": "^[a-z0-9]{3,24}$",
-												"message": "Only 3-24 lower case alphanumeric characters are allowed."
-											}
-										]
-									}
-								},
-								{
-									"name": "existingStorageAccountResourceGroupName",
-									"type": "Microsoft.Common.TextBox",
-									"label": "Existing Storage Account Resource Group",
-									"toolTip": "Enter the Resource Group name that the existing Storage Account is in.",
-									"constraints": {
-										"required": true,
-										"validations": [
-											{
-												"regex": "^[a-z0-9A-Z-_]{1,90}$",
-												"message": "Only 1-90 alphanumeric characters, hyphens, and underscores are allowed. The name must be globally unique"
-											}
-										]
+									"type": "Microsoft.Solutions.ResourceSelector",
+									"label": "Select a storage account",
+									"resourceType": "Microsoft.Storage/storageAccounts",
+									"options": {
+										"filter": {
+											"subscription": "onBasics",
+											"location": "onBasics"
+										}
 									}
 								}
 							],
@@ -858,8 +840,8 @@
 				"nsgFlowLogName": "[steps('flowLogs').nsgFlowLog.nsgFlowLogName",
 				"nsgFlowLogStorageAccount": "[steps('flowLogs').nsgFlowLog.nsgFlowLogStorageAccount",
 				"newNsgFlowLogStorageAccountName": "[steps('flowLogs').newNsgFlowLogStorageAccount.newNsgFlowLogStorageAccountName",
-				"existingNsgFlowLogStorageAccountName": "[steps('flowLogs').existingNsgFlowLogStorageAccount.existingNsgFlowLogStorageAccountName",
-				"existingStorageAccountResourceGroupName": "[steps('flowLogs').existingNsgFlowLogStorageAccount.existingStorageAccountResourceGroupName"
+				"existingNsgFlowLogStorageAccountName": "[steps('flowLogs').existingNsgFlowLogStorageAccount.existingNsgFlowLogStorageAccountName.name",
+				"existingStorageAccountResourceGroupName": "[steps('flowLogs').existingNsgFlowLogStorageAccount.existingNsgFlowLogStorageAccountName.resourcegroup"
 			},
 			"kind": "ResourceGroup",
 			"location": "[steps('basics').resourceScope.location.name]",
