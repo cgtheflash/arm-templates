@@ -490,6 +490,7 @@
 									"type": "Microsoft.Common.TextBox",
 									"label": "Riverbed Net Profiler Hostname",
 									"toolTip": "Enter a host name for the Net Profiler virtual machine.",
+									"defaultValue": "netprofiler",
 									"constraints": {
 										"required": true,
 										"validations": [
@@ -572,6 +573,7 @@
 									"type": "Microsoft.Common.TextBox",
 									"label": "Riverbed Flow Gateway Hostname",
 									"toolTip": "Enter a hostname for the Riverbed Flow Gateway virtual machine.",
+									"defaultValue": "flowgateway",
 									"constraints": {
 										"required": true,
 										"validations": [
