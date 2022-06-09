@@ -695,6 +695,7 @@
 									"name": "nsgFlowLogName",
 									"type": "Microsoft.Common.TextBox",
 									"label": "NSG Flow Logs Name",
+									"defaultValue": "[concat('nsg-rvbd-', steps('basics').resourceScope.location.name, '-flow-logs)]",
 									"toolTip": "Enter a name for the NSG Flow Logs resource.",
 									"constraints": {
 										"required": true,
