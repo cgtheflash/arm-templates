@@ -695,7 +695,7 @@
 									"name": "nsgFlowLogName",
 									"type": "Microsoft.Common.TextBox",
 									"label": "NSG Flow Logs Name",
-									"defaultValue": "[concat('nsg-rvbd-', steps('basics').resourceScope.location.name, '-flow-logs)]",
+									"defaultValue": "[concat('nsg-rvbd-', steps('basics').resourceScope.location.name, '-flow-logs')]",
 									"toolTip": "Enter a name for the NSG Flow Logs resource.",
 									"constraints": {
 										"required": true,
@@ -741,6 +741,7 @@
 									"type": "Microsoft.Common.TextBox",
 									"label": "New Storage Account Name Prefix",
 									"toolTip": "Enter between 1 and 5 characters to be used a prefix for the storage account name. The region and a unique string will append the prefix to create a globally unique name. ",
+									"defaultValue": "rvbfl",
 									"constraints": {
 										"required": true,
 										"validations": [
