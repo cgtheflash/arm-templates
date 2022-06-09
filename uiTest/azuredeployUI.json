@@ -20,19 +20,6 @@
 					"label": "Management Configuration",
 					"elements": [
 						{
-                            "name": "location",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Location",
-                            "defaultValue": "[[resourceGroup().location]",
-                            "toolTip": "",
-                            "constraints": {
-                                "required": false,
-                                "regex": "",
-                                "validationMessage": ""
-                            },
-                            "visible": true
-                        },
-						{
 							"name": "managementInfo",
 							"type": "Microsoft.Common.InfoBox",
 							"visible": true,
@@ -846,7 +833,7 @@
 				"existingStorageAccountResourceGroupName": "[steps('flowLogs').existingNsgFlowLogStorageAccount.existingStorageAccountResourceGroupName"
 			},
 			"kind": "ResourceGroup",
-			"location": "[steps('basics').resourceScope.location.name]",
+			"location": "[resourceGroup().location]",
 			"resourceGroupId": "[steps('basics').resourceScope.resourceGroup.id]"
 		}
 	}
