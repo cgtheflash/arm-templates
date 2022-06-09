@@ -3,7 +3,7 @@
 	"view": {
 		"kind": "Form",
 		"properties": {
-			"title": "Web App deployment wizard",
+			"title": "Riverbed deployment wizard",
 			"steps": [
 				{
 					"name": "basics",
@@ -830,10 +830,10 @@
 				"nsgFlowLogStorageAccount": "[steps('flowLogs').nsgFlowLog.nsgFlowLogStorageAccount",
 				"newNsgFlowLogStorageAccountName": "[steps('flowLogs').newNsgFlowLogStorageAccount.newNsgFlowLogStorageAccountName",
 				"existingNsgFlowLogStorageAccountName": "[steps('flowLogs').existingNsgFlowLogStorageAccount.existingNsgFlowLogStorageAccountName",
-				"existingStorageAccountResourceGroupName": "[steps('flowLogs').existingNsgFlowLogStorageAccount.existingStorageAccountResourceGroupName",
-				"location": "[resourceGroup().location]"
+				"existingStorageAccountResourceGroupName": "[steps('flowLogs').existingNsgFlowLogStorageAccount.existingStorageAccountResourceGroupName"
 			},
 			"kind": "ResourceGroup",
+			"location": "[steps('basics').resourceScope.location.name]",
 			"resourceGroupId": "[steps('basics').resourceScope.resourceGroup.id]"
 		}
 	}
