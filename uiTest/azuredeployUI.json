@@ -422,8 +422,8 @@
 								"type": "Microsoft.Common.TextBox",
 								"label": "Networks permitted to manage resources",
 								"defaultValue": "",
-								"toolTip": "Use 1-60 alphanumeric characters, hyphens, spaces, periods, and colons.",
-								"placeholder": "10.0.0.0/8 \n172.16.0.0/12 \n192.168.0.0/16",
+								"toolTip": "Enter network addresses separated by commas that are permitted to manage resources in this deployment.",
+								"placeholder": "10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16",
 								"constraints": {
 									"required": true,
 									"validations": [
