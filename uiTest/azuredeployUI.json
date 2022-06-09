@@ -422,7 +422,8 @@
 										]
 									}
 								}
-							]
+							],
+							"visible": true
 						},
 						{
 							"name": "managementNetworks",
