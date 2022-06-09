@@ -1,0 +1,1647 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "rvbdNetProfilerName": {
+            "defaultValue": "rvbd-netprofiler",
+            "type": "String"
+        },
+        "rvbdNetProfilerAdmin": {
+            "type": "string",
+            "defaultValue": "mazu",
+            "metadata": {
+                "description": "Username for the Virtual Machine."
+            }
+        },
+        "rvbdNetProfilerAdminPassword": {
+            "type": "secureString",
+            "minLength": 12,
+            "metadata": {
+                "description": "Password for the Virtual Machine."
+            }
+        },
+        "rvbdFlowGatewayName": {
+            "defaultValue": "rvbd-flowgateway",
+            "type": "String"
+        },
+        "rvbdFlowGatewayAdmin": {
+            "type": "string",
+            "defaultValue": "mazu",
+            "metadata": {
+                "description": "Username for the Virtual Machine."
+            }
+        },
+        "rvbdFlowGatewayAdminPassword": {
+            "type": "secureString",
+            "minLength": 12,
+            "metadata": {
+                "description": "Password for the Virtual Machine."
+            }
+        },
+        "deployBastion": {
+            "type": "string",
+            "allowedValues": [
+                "yes",
+                "no"
+            ]
+        },
+        "bastionName": {
+            "type": "string",
+            "defaultValue": "bastion",
+            "metadata": {
+                "description": "Name of Azure Bastion resource"
+            }
+        },
+        "deployJumpbox": {
+            "type": "string",
+            "allowedValues": [
+                "yes",
+                "no"
+            ]
+        },
+        "jumpboxName": {
+            "defaultValue": "rvbd-jumpbox",
+            "type": "String"
+        },
+        "jumpboxAdmin": {
+            "type": "string",
+            "defaultValue": "jumpboxAdmin",
+            "metadata": {
+                "description": "Username for the Virtual Machine."
+            }
+        },
+        "jumpboxAdminPassword": {
+            "type": "secureString",
+            "defaultValue": "N0t@53cur3p@55w0rd",
+            "minLength": 12,
+            "metadata": {
+                "description": "Password for the Virtual Machine."
+            }
+        },
+        "jumpboxOS": {
+            "type": "string",
+            "defaultValue": "2022-datacenter-azure-edition",
+            "allowedValues": [
+                "2022-datacenter-azure-edition",
+                "2019-datacenter-gensecond",
+                "2016-datacenter-gensecond"
+            ],
+            "metadata": {
+                "description": "The Windows version for the VM. This will pick a fully patched Gen2 image of this given Windows version."
+            }
+        },
+        "jumpboxSize": {
+            "type": "string",
+            "defaultValue": "Standard_B2ms",
+            "metadata": {
+                "description": "Size of the virtual machine."
+            }
+        },
+        "rvbdNetProfilerSize": {
+            "type": "string",
+            "defaultValue": "Standard_B2ms",
+            "metadata": {
+                "description": "Size of the virtual machine."
+            }
+        },
+        "rvbdFlowGatewaySize": {
+            "type": "string",
+            "defaultValue": "Standard_B2ms",
+            "metadata": {
+                "description": "Size of the virtual machine."
+            }
+        },
+        "flowGatewayDataDisks": {
+            "type": "array",
+            "defaultValue": [
+                {
+                    "lun": 0,
+                    "createOption": "attach",
+                    "deleteOption": "Detach",
+                    "caching": "ReadWrite",
+                    "writeAcceleratorEnabled": false,
+                    "id": null,
+                    "name": "rvb-flowgateway-1-datadisk-0",
+                    "storageAccountType": null,
+                    "diskSizeGB": null,
+                    "diskEncryptionSet": null
+                }
+            ],
+            "metadata": {
+                "description": "Properties for Flow Gateway VM disks. Array type must be a parameter as variables are not accepted."
+            }
+        },
+        "flowGatewayDataDiskResources": {
+            "type": "array",
+            "defaultValue": [
+                {
+                    "name": "rvb-flowgateway-1-datadisk-0",
+                    "sku": "StandardSSD_LRS",
+                    "properties": {
+                        "diskSizeGB": 512,
+                        "creationData": {
+                            "createOption": "empty"
+                        }
+                    }
+                }
+            ],
+            "metadata": {
+                "description": "Properties for Flow Gateway VM disks. Array type must be a parameter as variables are not accepted."
+            }
+        },
+        "netProfilerDataDisks": {
+            "type": "array",
+            "defaultValue": [
+                {
+                    "lun": 0,
+                    "createOption": "attach",
+                    "deleteOption": "Detach",
+                    "caching": "ReadWrite",
+                    "writeAcceleratorEnabled": false,
+                    "id": null,
+                    "name": "rvb-netprofiler-DataDisk0",
+                    "storageAccountType": null,
+                    "diskSizeGB": null,
+                    "diskEncryptionSet": null
+                },
+                {
+                    "lun": 1,
+                    "createOption": "attach",
+                    "deleteOption": "Detach",
+                    "caching": "ReadWrite",
+                    "writeAcceleratorEnabled": false,
+                    "id": null,
+                    "name": "rvb-netprofiler-DataDisk1",
+                    "storageAccountType": null,
+                    "diskSizeGB": null,
+                    "diskEncryptionSet": null
+                }
+            ],
+            "metadata": {
+                "description": "Properties for Net Profiler VM disks. Array type must be a parameter as variables are not accepted."
+            }
+        },
+        "netProfilerDataDiskResources": {
+            "type": "array",
+            "defaultValue": [
+                {
+                    "name": "rvb-netprofiler-DataDisk0",
+                    "sku": "StandardSSD_LRS",
+                    "properties": {
+                        "diskSizeGB": 1024,
+                        "creationData": {
+                            "createOption": "empty"
+                        }
+                    }
+                },
+                {
+                    "name": "rvb-netprofiler-DataDisk1",
+                    "sku": "StandardSSD_LRS",
+                    "properties": {
+                        "diskSizeGB": 512,
+                        "creationData": {
+                            "createOption": "empty"
+                        }
+                    }
+                }
+            ],
+            "metadata": {
+                "description": "Properties for Net Profiler VM disks. Array type must be a parameter as variables are not accepted."
+            }
+        },
+        "virtualNetworkName": {
+            "defaultValue": "vnet-rvbd",
+            "type": "String",
+            "metadata": {
+                "description": "Enter new VNet Name"
+            }
+        },
+        "virtualNetworkAddress": {
+            "defaultValue": "10.0.1.0/24",
+            "type": "String",
+            "metadata": {
+                "description": "Enter new VNet CIDR"
+            }
+        },
+        "azureBastionAddress": {
+            "type": "string",
+            "defaultValue": "10.0.1.0/27",
+            "metadata": {
+                "description": "Bastion subnet IP prefix MUST be within vnet IP prefix address space"
+            }
+        },
+        "subnetGeneralName": {
+            "defaultValue": "rvbd-general-subnet",
+            "type": "String",
+            "metadata": {
+                "description": "Subnet name for the Riverbed VMs"
+            }
+        },
+        "subnetGeneralAddress": {
+            "defaultValue": "10.0.1.128/26",
+            "type": "String",
+            "metadata": {
+                "description": "Enter New Riverbed Subnet CIDR"
+            }
+        },
+        "subnetOutboundName": {
+            "defaultValue": "rvbd-outbound-subnet",
+            "type": "String",
+            "metadata": {
+                "description": "Subnet name for the Riverbed VMs"
+            }
+        },
+        "subnetOutboundAddress": {
+            "defaultValue": "10.0.1.32/27",
+            "type": "String",
+            "metadata": {
+                "description": "Enter New Function Outbound Subnet CIDR"
+            }
+        },
+        "subnetInboundName": {
+            "defaultValue": "rvbd-inbound-subnet",
+            "type": "String",
+            "metadata": {
+                "description": "Subnet name for the Riverbed VMs"
+            }
+        },
+        "subnetInboundAddress": {
+            "defaultValue": "10.0.1.64/27",
+            "type": "String",
+            "metadata": {
+                "description": "Enter New Function Inbound Subnet CIDR"
+            }
+        },
+        "asgName": {
+            "defaultValue": "asg-rvbd-gen",
+            "type": "String",
+            "metadata": {
+                "description": "Enter New Riverbed Application Security Group Name"
+            }
+        },
+        "nsgName": {
+            "defaultValue": "nsg-rvbd",
+            "type": "String",
+            "metadata": {
+                "description": "Enter New Network Security Group Name For New Virtual Network Spoke"
+            }
+        },
+        "allowedSourceIpToMgmt": {
+            "defaultValue": [
+                "10.0.0.0/8",
+                "172.16.0.0/12",
+                "192.168.0.0/16"
+            ],
+            "type": "Array",
+            "metadata": {
+                "description": "Source IP Addresses Or CIDRs That Are Allowed Inbound On Ports 3389 and 22 To This New Spoke"
+            }
+        },
+        "appServicePlanName": {
+            "defaultValue": "asp-rvbd-flowlogs-function",
+            "type": "String",
+            "metadata": {
+                "description": "Enter the Application Service Plan for the Function"
+            }
+        },
+        "siteName": {
+            "defaultValue": "rvbdflowlog",
+            "type": "String",
+            "metadata": {
+                "description": "Enter the site name for the Function (this will be used for many components such as the private endpoint and storage account as well)"
+            }
+        },
+        "rvbdFunctionStorageAccountNamePrefix": {
+            "defaultValue": "rvbfunction",
+            "type": "String",
+            "minLength": 1,
+            "maxLength": 11,
+            "metadata": {
+                "description": "Enter storage account name prefix between 1 and 11 characters. A unique string will be appended to the end of the name."
+            }
+        },
+        "nsgFlowLogStorageAccount": {
+            "type": "string",
+            "allowedValues": [
+                "new",
+                "existing"
+            ]
+        },
+        "newNsgFlowLogStorageAccountName": {
+            "defaultValue": "nsgfl",
+            "type": "String",
+            "minLength": 1,
+            "maxLength": 5,
+            "metadata": {
+                "description": "Enter between 1 and 5 characters. The region and a unique string will be appended to the end of the name."
+            }
+        },
+        "existingNsgFlowLogStorageAccountName": {
+            "defaultValue": "nsgfl",
+            "type": "String",
+            "minLength": 3,
+            "maxLength": 24,
+            "metadata": {
+                "description": "Enter existing storage account name between 3 and 24 characters."
+            }
+        },
+        "existingStorageAccountResourceGroupName": {
+            "defaultValue": "existingResourceGroupName",
+            "type": "String",
+            "metadata": {
+                "description": "Enter the resource group name of the existing Storage Account. If making a new storage account leave the default value."
+            }
+        },
+        "nsgFlowLogName": {
+            "type": "string",
+            "defaultValue": "nsg-rvbd-flow-log",
+            "metadata": {
+                "description": "Enter a name for the NSG Flow Log"
+            }
+        }
+    },
+    "variables": {
+        "public-ip-address-name": "[concat(parameters('bastionName'),'-pip')]",
+        "bastion-subnet-name": "AzureBastionSubnet",
+        "bastion-nsg-name": "[concat(parameters('bastionName'),'-nsg')]",
+        "privateDnsZones_privatelink_azurewebsites_net_name": "privatelink.azurewebsites.net",
+        "networkInterfaces_rvbd_bastion_eth0_name": "[concat(parameters('jumpboxName'),'-eth0')]",
+        "networkInterfaces_rvb_netprofiler_eth0_name": "[concat(parameters('rvbdNetProfilerName'),'-eth0')]",
+        "networkInterfaces_rvb_flowgateway_eth0_name": "[concat(parameters('rvbdFlowGatewayName'),'-eth0')]",
+        "networkInterfaces_rvb_function_private_endpoint": "[concat(parameters('siteName'),'-private-endpoint')]",
+        "functionStorageAccountName": "[concat(parameters('rvbdFunctionStorageAccountNamePrefix'), uniqueString(resourceGroup().id) )]",
+        "nsgFlowLogStorageAccountNameNew": "[concat(parameters('newNsgFlowLogStorageAccountName'), resourceGroup().location, uniqueString(resourceGroup().id) )]",
+        "nsgFlowLogStorageAccountResourceID": "[resourceId(if(equals(parameters('nsgFlowLogStorageAccount'),'new'), resourceGroup().name, parameters('existingStorageAccountResourceGroupName')),'Microsoft.Storage/storageAccounts', if(equals(parameters('nsgFlowLogStorageAccount'),'new'), variables('nsgFlowLogStorageAccountNameNew'), parameters('existingNsgFlowLogStorageAccountName')))]",
+        "networkWatcherName": "[concat('NetworkWatcher_', resourcegroup().location)]",
+        "rvbdNetProfilerOsDiskType": "Premium_LRS",
+        "rvbdFlowGatewayOsDiskType": "Premium_LRS"
+    },
+    "resources": [
+        {
+            "comments": "Public IP Address resource for the Azure Bastion Host.",
+            "apiVersion": "2020-05-01",
+            "type": "Microsoft.Network/publicIpAddresses",
+            "name": "[variables('public-ip-address-name')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard"
+            },
+            "properties": {
+                "publicIPAllocationMethod": "Static"
+            }
+        },
+        {
+            "comments": "Network Security Group associated with the Azure Bastion Host subnet.",
+            "condition": "[equals(parameters('deployBastion'),'yes')]",
+            "apiVersion": "2020-05-01",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[variables('bastion-nsg-name')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "AllowHttpsInBound",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "sourceAddressPrefix": "Internet",
+                            "destinationPortRange": "443",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "AllowGatewayManagerInBound",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "sourceAddressPrefix": "GatewayManager",
+                            "destinationPortRange": "443",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 110,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "AllowLoadBalancerInBound",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "sourceAddressPrefix": "AzureLoadBalancer",
+                            "destinationPortRange": "443",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 120,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "AllowBastionHostCommunicationInBound",
+                        "properties": {
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationPortRanges": [
+                                "8080",
+                                "5701"
+                            ],
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 130,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "DenyAllInBound",
+                        "properties": {
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationPortRange": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 1000,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "AllowSshRdpOutBound",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationPortRanges": [
+                                "22",
+                                "3389"
+                            ],
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Outbound"
+                        }
+                    },
+                    {
+                        "name": "AllowAzureCloudCommunicationOutBound",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationPortRange": "443",
+                            "destinationAddressPrefix": "AzureCloud",
+                            "access": "Allow",
+                            "priority": 110,
+                            "direction": "Outbound"
+                        }
+                    },
+                    {
+                        "name": "AllowBastionHostCommunicationOutBound",
+                        "properties": {
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationPortRanges": [
+                                "8080",
+                                "5701"
+                            ],
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 120,
+                            "direction": "Outbound"
+                        }
+                    },
+                    {
+                        "name": "AllowGetSessionInformationOutBound",
+                        "properties": {
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "Internet",
+                            "destinationPortRanges": [
+                                "80",
+                                "443"
+                            ],
+                            "access": "Allow",
+                            "priority": 130,
+                            "direction": "Outbound"
+                        }
+                    },
+                    {
+                        "name": "DenyAllOutBound",
+                        "properties": {
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 1000,
+                            "direction": "Outbound"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "comments": "Application Security Group associated with Riverbed VM NICs and used in the Network Security Group specified below.",
+            "type": "Microsoft.Network/applicationSecurityGroups",
+            "apiVersion": "2020-05-01",
+            "name": "[parameters('asgName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {}
+        },
+        {
+            "comments": "Network Security Group associated with all subnets in the Virtual Network listed below except for the Azure Bastion Host subnet which has a dedicated NSG.",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2020-05-01",
+            "name": "[parameters('nsgName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/applicationSecurityGroups', parameters('asgName'))]"
+            ],
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "HTTP-HTTPS",
+                        "properties": {
+                            "description": "Allow Application Gateway subnet to App Application Security Group",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "sourceAddressPrefixes": "[parameters('allowedSourceIpToMgmt')]",
+                            "destinationApplicationSecurityGroups": [
+                                {
+                                    "id": "[resourceId('Microsoft.Network/applicationSecurityGroups',parameters('asgName'))]"
+                                }
+                            ],
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [
+                                "80",
+                                "443"
+                            ],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "RDP",
+                        "properties": {
+                            "description": "Allow RDP from Bastion.",
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "3389",
+                            "access": "Allow",
+                            "priority": 110,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefix": "[parameters('azureBastionAddress')]",
+                            "destinationAddressPrefixes": [],
+                            "destinationApplicationSecurityGroups": [
+                                {
+                                    "id": "[resourceId('Microsoft.Network/applicationSecurityGroups',parameters('asgName'))]"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "SSH",
+                        "properties": {
+                            "description": "Allow SSH from Bastion.",
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "22",
+                            "access": "Allow",
+                            "priority": 120,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefix": "[parameters('azureBastionAddress')]",
+                            "destinationAddressPrefixes": [],
+                            "destinationApplicationSecurityGroups": [
+                                {
+                                    "id": "[resourceId('Microsoft.Network/applicationSecurityGroups',parameters('asgName'))]"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "Flowlogs",
+                        "properties": {
+                            "description": "Allow Riverbed appliances to receive Flow Logs from Azure Function source.",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "2055",
+                            "access": "Allow",
+                            "priority": 140,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefix": "[parameters('subnetOutboundAddress')]",
+                            "destinationAddressPrefixes": [],
+                            "destinationApplicationSecurityGroups": [
+                                {
+                                    "id": "[resourceId('Microsoft.Network/applicationSecurityGroups',parameters('asgName'))]"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "Riverbed-Encrypted",
+                        "properties": {
+                            "description": "Encrypted traffic between the flow gateway and the netprofiler.",
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "41017",
+                            "access": "Allow",
+                            "priority": 150,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceApplicationSecurityGroups": [
+                                {
+                                    "id": "[resourceId('Microsoft.Network/applicationSecurityGroups',parameters('asgName'))]"
+                                }
+                            ],
+                            "destinationApplicationSecurityGroups": [
+                                {
+                                    "id": "[resourceId('Microsoft.Network/applicationSecurityGroups',parameters('asgName'))]"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "MGMT-ICMP",
+                        "properties": {
+                            "description": "Allow inbound ICMP",
+                            "protocol": "Icmp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 130,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": "[parameters('allowedSourceIpToMgmt')]",
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "Allow-Azure-Load-Balancer-Probes",
+                        "properties": {
+                            "description": "DO NOT DELETE - ALB will not function without this rule",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "AzureLoadBalancer",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 4095,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "Default-Deny-All",
+                        "properties": {
+                            "description": "DO NOT DELETE - Denies all traffic unless explicitly allowed",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 4096,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "comments": "Virtual Network resource. Includes Bastion and Riverbed subnets as well as the private link and vnet integration subnets for use with the Azure Function. All subnets have appropriate NSGs associated with them.",
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2019-09-01",
+            "name": "[parameters('virtualNetworkName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/applicationSecurityGroups', parameters('asgName'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('virtualNetworkAddress')]"
+                    ]
+                },
+                "subnets": [],
+                "enableDdosProtection": false,
+                "enableVmProtection": false
+            }
+        },
+        {
+            "comments": "Subnet resources that are created above but, now need service endpoints for Microsoft.Storage access directly.",
+            "condition": "[equals(parameters('deployBastion'),'yes')]",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworkName'), '/', variables('bastion-subnet-name'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('bastion-nsg-name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "[parameters('azureBastionAddress')]",
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('bastion-nsg-name'))]"
+                },
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "comments": "Subnet resources that are created above but, now need service endpoints for Microsoft.Storage access directly.",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworkName'), '/', parameters('subnetGeneralName'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), variables('bastion-subnet-name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "[parameters('subnetGeneralAddress')]",
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
+                },
+                "serviceEndpoints": [
+                    {
+                        "service": "Microsoft.Storage"
+                    }
+                ],
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "comments": "Subnet resources that are created above configure service endpoints for Microsoft.Storage access directly.",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworkName'), '/', parameters('subnetInboundName'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetGeneralName'))]"
+            ],
+            "properties": {
+                "addressPrefix": "[parameters('subnetInboundAddress')]",
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
+                },
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Disabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "comments": "Subnet resources that are created above configure service endpoints for Microsoft.Storage access directly.",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworkName'), '/', parameters('subnetOutboundName'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetGeneralName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetInboundName'))]"
+            ],
+            "properties": {
+                "addressPrefix": "[parameters('subnetOutboundAddress')]",
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
+                },
+                "serviceEndpoints": [
+                    {
+                        "service": "Microsoft.Storage"
+                    }
+                ],
+                "delegations": [
+                    {
+                        "name": "delegation",
+                        "properties": {
+                            "serviceName": "Microsoft.Web/serverfarms"
+                        }
+                    }
+                ],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "comments": "Azure Bastion Host resource used to securely connect to the Virtual Machines rather than exposing RDP over the public internet.",
+            "condition": "[equals(parameters('deployBastion'),'yes')]",
+            "apiVersion": "2020-05-01",
+            "type": "Microsoft.Network/bastionHosts",
+            "name": "[parameters('bastionName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIpAddresses', variables('public-ip-address-name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "IpConf",
+                        "properties": {
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), variables('bastion-subnet-name'))]"
+                            },
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIpAddresses', variables('public-ip-address-name'))]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "comments": "App Service Plan for the Azure Function.",
+            "apiVersion": "2018-11-01",
+            "name": "[parameters('appServicePlanName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[resourceGroup().location]",
+            "kind": "linux",
+            "tags": null,
+            "dependsOn": [],
+            "properties": {
+                "name": "[parameters('appServicePlanName')]",
+                "workerSize": "3",
+                "workerSizeId": "3",
+                "numberOfWorkers": "1",
+                "reserved": true,
+                "zoneRedundant": false
+            },
+            "sku": {
+                "Tier": "PremiumV2",
+                "Name": "P1v2"
+            }
+        },
+        {
+            "comments": "Azure Private DNS Zone resource used with Private Link for the Azure Function",
+            "type": "Microsoft.Network/privateDnsZones",
+            "apiVersion": "2018-09-01",
+            "name": "[variables('privateDnsZones_privatelink_azurewebsites_net_name')]",
+            "location": "global",
+            "properties": {
+                "maxNumberOfRecordSets": 25000,
+                "maxNumberOfVirtualNetworkLinks": 1000,
+                "maxNumberOfVirtualNetworkLinksWithRegistration": 100,
+                "numberOfRecordSets": 3,
+                "numberOfVirtualNetworkLinks": 1,
+                "numberOfVirtualNetworkLinksWithRegistration": 0,
+                "provisioningState": "Succeeded"
+            }
+        },
+        {
+            "comments": "Virtual Network Link for Private DNS Zone used for Private Link.",
+            "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+            "apiVersion": "2018-09-01",
+            "name": "[format('{0}/{1}', variables('privateDnsZones_privatelink_azurewebsites_net_name'), format('{0}-link', parameters('siteName')))]",
+            "location": "global",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/privateEndpoints',parameters('siteName'))]",
+                "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_net_name'))]"
+            ],
+            "properties": {
+                "virtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]"
+                },
+                "registrationEnabled": false
+            }
+        },
+        {
+            "comments": "Azure Function network interface for Private Endpoint.",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2020-11-01",
+            "name": "[variables('networkInterfaces_rvb_function_private_endpoint')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetInboundName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "privateEndpointIpConfig.1c94c7c1-be2d-4d70-8b12-caedfbe1e67f",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetInboundName'))]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false
+            }
+        },
+        {
+            "comments": "Private Endpoint resource for use with the private link service associated to the Azure Function resource.",
+            "type": "Microsoft.Network/privateEndpoints",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('siteName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('siteName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetInboundName'))]"
+            ],
+            "properties": {
+                "privateLinkServiceConnections": [
+                    {
+                        "name": "[parameters('siteName')]",
+                        "properties": {
+                            "privateLinkServiceId": "[resourceId('Microsoft.Web/sites', parameters('siteName'))]",
+                            "groupIds": [
+                                "sites"
+                            ],
+                            "privateLinkServiceConnectionState": {
+                                "status": "Approved",
+                                "actionsRequired": "None"
+                            }
+                        }
+                    }
+                ],
+                "manualPrivateLinkServiceConnections": [],
+                "subnet": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetInboundName'))]"
+                },
+                "customDnsConfigs": []
+            }
+        },
+        {
+            "comments": "Private DNS Zone Group for use with Private Endpoint with the Private Link service associated to the Azure Function resource.",
+            "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('siteName'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/privateEndpoints', parameters('siteName'))]",
+                "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_net_name'))]"
+            ],
+            "properties": {
+                "privateDnsZoneConfigs": [
+                    {
+                        "name": "privatelink.azurewebsites.net-config",
+                        "properties": {
+                            "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_net_name'))]"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "comments": "Azure Function web site configuration. The code still needs to be added to the site afterwards.",
+            "apiVersion": "2018-11-01",
+            "name": "[parameters('siteName')]",
+            "type": "Microsoft.Web/sites",
+            "kind": "functionapp,linux",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]"
+            ],
+            "properties": {
+                "name": "[parameters('siteName')]",
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "FUNCTIONS_EXTENSION_VERSION",
+                            "value": "~3"
+                        },
+                        {
+                            "name": "FUNCTIONS_WORKER_RUNTIME",
+                            "value": "dotnet"
+                        },
+                        {
+                            "name": "AzureWebJobsStorage",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('functionStorageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('functionStorageAccountName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTOVERVNET",
+                            "value": "1"
+                        }
+                    ],
+                    "cors": {
+                        "allowedOrigins": [
+                            "https://portal.azure.com"
+                        ]
+                    },
+                    "use32BitWorkerProcess": false,
+                    "linuxFxVersion": "dotnet|3.1",
+                    "alwaysOn": true,
+                    "vnetRouteAllEnabled": true
+                },
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
+                "clientAffinityEnabled": false,
+                "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetOutboundName'))]"
+            }
+        },
+        {
+            "comments": "Cname or hostname binding for the site to make the URL more user friendly.",
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "apiVersion": "2021-03-01",
+            "name": "[concat(parameters('siteName'), '/', parameters('siteName'), '.azurewebsites.net')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('siteName'))]"
+            ],
+            "properties": {
+                "siteName": "rvbflowlogseus",
+                "hostNameType": "Verified"
+            }
+        },
+        {
+            "comments": "Network Interface for the jumpbox.",
+            "condition": "[equals(parameters('deployJumpbox'),'yes')]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2020-11-01",
+            "name": "[variables('networkInterfaces_rvbd_bastion_eth0_name')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/applicationSecurityGroups', parameters('asgName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetGeneralName'))]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4",
+                            "applicationSecurityGroups": [
+                                {
+                                    "id": "[resourceId('Microsoft.Network/applicationSecurityGroups', parameters('asgName'))]"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false
+            }
+        },
+        {
+            "comments": "Network interface for the Riverbed Net Profiler VM.",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2020-11-01",
+            "name": "[variables('networkInterfaces_rvb_netprofiler_eth0_name')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/applicationSecurityGroups', parameters('asgName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetGeneralName'))]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4",
+                            "applicationSecurityGroups": [
+                                {
+                                    "id": "[resourceId('Microsoft.Network/applicationSecurityGroups', parameters('asgName'))]"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false
+            }
+        },
+        {
+            "comments": "Network interface for the Riverbed Flow Gateway VM.",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2020-11-01",
+            "name": "[variables('networkInterfaces_rvb_flowgateway_eth0_name')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/applicationSecurityGroups', parameters('asgName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetGeneralName'))]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4",
+                            "applicationSecurityGroups": [
+                                {
+                                    "id": "[resourceId('Microsoft.Network/applicationSecurityGroups', parameters('asgName'))]"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false
+            }
+        },
+        {
+            "comments": "Jumpbox virtual machine resource.",
+            "condition": "[equals(parameters('deployJumpbox'),'yes')]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2021-11-01",
+            "name": "[parameters('jumpboxName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_rvbd_bastion_eth0_name'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('jumpboxSize')]"
+                },
+                "osProfile": {
+                    "computerName": "[parameters('jumpboxName')]",
+                    "adminUsername": "[parameters('jumpboxAdmin')]",
+                    "adminPassword": "[parameters('jumpboxAdminPassword')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "[parameters('jumpboxOS')]",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "StandardSSD_LRS"
+                        }
+                    },
+                    "dataDisks": [
+                        {
+                            "diskSizeGB": 127,
+                            "lun": 0,
+                            "createOption": "Empty",
+                            "deleteOption": "Delete"
+                        }
+                    ]
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_rvbd_bastion_eth0_name'))]",
+                            "properties": {
+                                "deleteOption": "Delete"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "comments": "Flow Gateway Data Disk resources.",
+            "name": "[parameters('flowGatewayDataDiskResources')[copyIndex()].name]",
+            "type": "Microsoft.Compute/disks",
+            "apiVersion": "2020-12-01",
+            "location": "[resourceGroup().location]",
+            "properties": "[parameters('flowGatewayDataDiskResources')[copyIndex()].properties]",
+            "sku": {
+                "name": "[parameters('flowGatewayDataDiskResources')[copyIndex()].sku]"
+            },
+            "copy": {
+                "name": "managedDiskResources",
+                "count": "[length(parameters('flowGatewayDataDiskResources'))]"
+            }
+        },
+        {
+            "comments": "Riverbed Flow Gateway virtual machine resource.",
+            "name": "[parameters('rvbdFlowGatewayName')]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2021-07-01",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "managedDiskResources",
+                "[concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaces_rvb_flowgateway_eth0_name'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('rvbdFlowGatewaySize')]"
+                },
+                "storageProfile": {
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[variables('rvbdFlowGatewayOsDiskType')]"
+                        },
+                        "deleteOption": "Delete"
+                    },
+                    "imageReference": {
+                        "publisher": "riverbed",
+                        "offer": "flowgateway",
+                        "sku": "scfg-ve-base",
+                        "version": "latest"
+                    },
+                    "copy": [
+                        {
+                            "name": "dataDisks",
+                            "count": "[length(parameters('flowGatewayDataDisks'))]",
+                            "input": {
+                                "lun": "[parameters('flowGatewayDataDisks')[copyIndex('dataDisks')].lun]",
+                                "createOption": "[parameters('flowGatewayDataDisks')[copyIndex('dataDisks')].createOption]",
+                                "caching": "[parameters('flowGatewayDataDisks')[copyIndex('dataDisks')].caching]",
+                                "diskSizeGB": "[parameters('flowGatewayDataDisks')[copyIndex('dataDisks')].diskSizeGB]",
+                                "managedDisk": {
+                                    "id": "[coalesce(parameters('flowGatewayDataDisks')[copyIndex('dataDisks')].id, if(equals(parameters('flowGatewayDataDisks')[copyIndex('dataDisks')].name, json('null')), json('null'), resourceId('Microsoft.Compute/disks', parameters('flowGatewayDataDisks')[copyIndex('dataDisks')].name)))]",
+                                    "storageAccountType": "[parameters('flowGatewayDataDisks')[copyIndex('dataDisks')].storageAccountType]"
+                                },
+                                "deleteOption": "[parameters('flowGatewayDataDisks')[copyIndex('dataDisks')].deleteOption]",
+                                "writeAcceleratorEnabled": "[parameters('flowGatewayDataDisks')[copyIndex('dataDisks')].writeAcceleratorEnabled]"
+                            }
+                        }
+                    ]
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_rvb_flowgateway_eth0_name'))]",
+                            "properties": {
+                                "deleteOption": "Detach"
+                            }
+                        }
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "[parameters('rvbdFlowGatewayName')]",
+                    "adminUsername": "[parameters('rvbdFlowGatewayAdmin')]",
+                    "adminPassword": "[parameters('rvbdFlowGatewayAdminPassword')]",
+                    "linuxConfiguration": {
+                        "patchSettings": {
+                            "patchMode": "ImageDefault"
+                        }
+                    }
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
+                }
+            },
+            "plan": {
+                "name": "scfg-ve-base",
+                "publisher": "riverbed",
+                "product": "flowgateway"
+            }
+        },
+        {
+            "comments": "Net Profiler Data Disk resources.",
+            "name": "[parameters('netProfilerDataDiskResources')[copyIndex()].name]",
+            "type": "Microsoft.Compute/disks",
+            "apiVersion": "2020-12-01",
+            "location": "[resourceGroup().location]",
+            "properties": "[parameters('netProfilerDataDiskResources')[copyIndex()].properties]",
+            "sku": {
+                "name": "[parameters('netProfilerDataDiskResources')[copyIndex()].sku]"
+            },
+            "copy": {
+                "name": "managedDiskResources",
+                "count": "[length(parameters('netProfilerDataDiskResources'))]"
+            }
+        },
+        {
+            "comments": "Riverbed Net Profiler virtual machine resource.",
+            "name": "[parameters('rvbdNetProfilerName')]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2021-07-01",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "managedDiskResources",
+                "[concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaces_rvb_netprofiler_eth0_name'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('rvbdNetProfilerSize')]"
+                },
+                "storageProfile": {
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[variables('rvbdNetProfilerOsDiskType')]"
+                        },
+                        "deleteOption": "Delete"
+                    },
+                    "imageReference": {
+                        "publisher": "riverbed",
+                        "offer": "netprofiler",
+                        "sku": "scnp-ve-base",
+                        "version": "latest"
+                    },
+                    "copy": [
+                        {
+                            "name": "dataDisks",
+                            "count": "[length(parameters('netProfilerDataDisks'))]",
+                            "input": {
+                                "lun": "[parameters('netProfilerDataDisks')[copyIndex('dataDisks')].lun]",
+                                "createOption": "[parameters('netProfilerDataDisks')[copyIndex('dataDisks')].createOption]",
+                                "caching": "[parameters('netProfilerDataDisks')[copyIndex('dataDisks')].caching]",
+                                "diskSizeGB": "[parameters('netProfilerDataDisks')[copyIndex('dataDisks')].diskSizeGB]",
+                                "managedDisk": {
+                                    "id": "[coalesce(parameters('netProfilerDataDisks')[copyIndex('dataDisks')].id, if(equals(parameters('netProfilerDataDisks')[copyIndex('dataDisks')].name, json('null')), json('null'), resourceId('Microsoft.Compute/disks', parameters('netProfilerDataDisks')[copyIndex('dataDisks')].name)))]",
+                                    "storageAccountType": "[parameters('netProfilerDataDisks')[copyIndex('dataDisks')].storageAccountType]"
+                                },
+                                "deleteOption": "[parameters('netProfilerDataDisks')[copyIndex('dataDisks')].deleteOption]",
+                                "writeAcceleratorEnabled": "[parameters('netProfilerDataDisks')[copyIndex('dataDisks')].writeAcceleratorEnabled]"
+                            }
+                        }
+                    ]
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaces_rvb_netprofiler_eth0_name'))]",
+                            "properties": {
+                                "deleteOption": "Detach"
+                            }
+                        }
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "[parameters('rvbdNetProfilerName')]",
+                    "adminUsername": "[parameters('rvbdNetProfilerAdmin')]",
+                    "adminPassword": "[parameters('rvbdNetProfilerAdminPassword')]",
+                    "linuxConfiguration": {
+                        "patchSettings": {
+                            "patchMode": "ImageDefault"
+                        }
+                    }
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
+                }
+            },
+            "plan": {
+                "name": "scnp-ve-base",
+                "publisher": "riverbed",
+                "product": "netprofiler"
+            }
+        },
+        {
+            "comments": "Storage Account used for Azure Function.",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2021-09-01",
+            "name": "[variables('functionStorageAccountName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), variables('bastion-subnet-name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetGeneralName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetInboundName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetOutboundName'))]"
+            ],
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "StorageV2",
+            "properties": {
+                "publicNetworkAccess": "Enabled",
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": false,
+                "networkAcls": {
+                    "resourceAccessRules": [],
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetGeneralName'))]",
+                            "action": "Allow",
+                            "state": "Succeeded"
+                        },
+                        {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetOutboundName'))]",
+                            "action": "Allow",
+                            "state": "Succeeded"
+                        }
+                    ],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "keyType": "Account",
+                            "enabled": true
+                        },
+                        "blob": {
+                            "keyType": "Account",
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                },
+                "accessTier": "Hot"
+            }
+        },
+        {
+            "comments": "Storage Account used for NSG Flow Log deployment. Only gets deployed if 'new' NSG Flow Log Storage Account is required based on parameter selection.",
+            "condition": "[equals(parameters('nsgFlowLogStorageAccount'),'new')]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "name": "deployFlowLogStorage",
+            "resourceGroup": "[resourceGroup().name]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]"
+            ],
+            "properties": {
+                "expressionEvaluationOptions": {
+                    "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                    "nsgFlowLogStorageAccountNameNew": {
+                        "value": "[variables('nsgFlowLogStorageAccountNameNew')]"
+                    }
+                },
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "nsgFlowLogStorageAccountNameNew": {
+                            "type": "string"
+                        }
+                    },
+                    "resources": [
+                        {
+                            "type": "Microsoft.Storage/storageAccounts",
+                            "apiVersion": "2021-09-01",
+                            "name": "[parameters('nsgFlowLogStorageAccountNameNew')]",
+                            "location": "[resourceGroup().location]",
+                            "sku": {
+                                "name": "Standard_LRS",
+                                "tier": "Standard"
+                            },
+                            "kind": "StorageV2",
+                            "properties": {
+                                "publicNetworkAccess": "Enabled",
+                                "minimumTlsVersion": "TLS1_2",
+                                "allowBlobPublicAccess": false,
+                                "supportsHttpsTrafficOnly": true,
+                                "encryption": {
+                                    "services": {
+                                        "file": {
+                                            "keyType": "Account",
+                                            "enabled": true
+                                        },
+                                        "blob": {
+                                            "keyType": "Account",
+                                            "enabled": true
+                                        }
+                                    },
+                                    "keySource": "Microsoft.Storage"
+                                },
+                                "accessTier": "Hot"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "comments": "NSG Flow Log deployment. Only gets deployed if 'new' NSG Flow Log Storage Account is required based on parameter selection.",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "name": "deployFlowLogs",
+            "resourceGroup": "NetworkWatcherRG",
+            "dependsOn": [
+                "deployFlowLogStorage",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
+            ],
+            "properties": {
+                "expressionEvaluationOptions": {
+                    "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                    "location": {
+                        "value": "[resourceGroup().location]"
+                    },
+                    "NetworkWatcherName": {
+                        "value": "[variables('NetworkWatcherName')]"
+                    },
+                    "FlowLogName": {
+                        "value": "[parameters('nsgFlowLogName')]"
+                    },
+                    "existingNSG": {
+                        "value": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
+                    },
+                    "RetentionDays": {
+                        "value": 5
+                    },
+                    "FlowLogsversion": {
+                        "value": 2
+                    },
+                    "storageAccountResourceId": {
+                        "value": "[variables('nsgFlowLogStorageAccountResourceID')]"
+                    }
+                },
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "metadata": {
+                        "_generator": {
+                            "name": "bicep",
+                            "version": "0.5.6.12127",
+                            "templateHash": "6284436258166874151"
+                        }
+                    },
+                    "parameters": {
+                        "location": {
+                            "type": "string"
+                        },
+                        "NetworkWatcherName": {
+                            "type": "string"
+                        },
+                        "FlowLogName": {
+                            "type": "string"
+                        },
+                        "existingNSG": {
+                            "type": "string"
+                        },
+                        "RetentionDays": {
+                            "type": "int"
+                        },
+                        "FlowLogsversion": {
+                            "type": "int"
+                        },
+                        "storageAccountResourceId": {
+                            "type": "string"
+                        }
+                    },
+                    "resources": [
+                        {
+                            "type": "Microsoft.Network/networkWatchers/flowLogs",
+                            "apiVersion": "2020-06-01",
+                            "name": "[format('{0}/{1}', parameters('NetworkWatcherName'), parameters('FlowLogName'))]",
+                            "location": "[parameters('location')]",
+                            "properties": {
+                                "targetResourceId": "[parameters('existingNSG')]",
+                                "storageId": "[parameters('storageAccountResourceId')]",
+                                "enabled": true,
+                                "retentionPolicy": {
+                                    "days": "[parameters('RetentionDays')]",
+                                    "enabled": true
+                                },
+                                "format": {
+                                    "type": "JSON",
+                                    "version": "[parameters('FlowLogsversion')]"
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}
