@@ -6,6 +6,16 @@
 			"title": "Web App deployment wizard",
 			"steps": [
 				{
+					"name": "basics",
+					"label": "Deployment location",
+					"elements": [
+						{
+							"name": "resourceScope",
+							"type": "Microsoft.Common.ResourceScope"
+						}
+					]
+				},
+				{
 					"name": "management",
 					"label": "Management Configuration",
 					"elements": [
@@ -781,8 +791,10 @@
 						}
 					]
 				}
-			],
-			"outputs": {
+			]
+		},
+		"outputs": {
+			"parameters": {
 				"deployBastion": "[steps('management').azureBastionDeploy]",
 				"bastionName": "[steps('management').azureBastion.bastionName]",
 				"deployJumpbox": "[steps('management').jumpboxDeploy]",
@@ -821,6 +833,9 @@
 				"existingStorageAccountResourceGroupName": "[steps('flowLogs').existingNsgFlowLogStorageAccount.existingStorageAccountResourceGroupName",
 				"location": "[location()]"
 			}
-		}
+		},
+		"kind": "ResourceGroup",
+		"location": "[steps('basics').resourceScope.location.name]",
+		"resourceGroupId": "[steps('basics').resourceScope.resourceGroup.id]"
 	}
 }
