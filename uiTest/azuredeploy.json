@@ -294,12 +294,8 @@
             }
         },
         "allowedSourceIpToMgmt": {
-            "defaultValue": [
-                "10.0.0.0/8",
-                "172.16.0.0/12",
-                "192.168.0.0/16"
-            ],
-            "type": "Array",
+            "defaultValue": "10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16",
+            "type": "String",
             "metadata": {
                 "description": "Source IP Addresses Or CIDRs That Are Allowed Inbound On Ports 3389 and 22 to the spoke separated by commas."
             }
@@ -576,7 +572,7 @@
                             "description": "Allow Application Gateway subnet to App Application Security Group",
                             "protocol": "Tcp",
                             "sourcePortRange": "*",
-                            "sourceAddressPrefixes": "[parameters('allowedSourceIpToMgmt')]",
+                            "sourceAddressPrefixes": "[array(parameters('allowedSourceIpToMgmt'))]",
                             "destinationApplicationSecurityGroups": [
                                 {
                                     "id": "[resourceId('Microsoft.Network/applicationSecurityGroups',parameters('asgName'))]"
@@ -678,7 +674,7 @@
                             "access": "Allow",
                             "priority": 130,
                             "direction": "Inbound",
-                            "sourceAddressPrefixes": "[parameters('allowedSourceIpToMgmt')]"
+                            "sourceAddressPrefixes": "[array(parameters('allowedSourceIpToMgmt'))]"
                         }
                     },
                     {
