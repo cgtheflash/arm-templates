@@ -833,7 +833,7 @@
 				"rvbdFlowGatewaySize": "[steps('riverbed').flowGateway.rvbdFlowGatewaySize]",
 				"rvbdFlowGatewayName": "[steps('riverbed').flowGateway.rvbdFlowGatewayName]",
 				"rvbdFlowGatewayAdmin": "[steps('riverbed').flowGateway.rvbdFlowGatewayAdmin]",
-				"rvbdFlowGatewayAdminPassword": "[steps('riverbed').netProfiler.rvbdFlowGatewayAdminPassword]",
+				"rvbdFlowGatewayAdminPassword": "[steps('riverbed').flowGateway.rvbdFlowGatewayAdminPassword]",
 				"appServicePlanName": "[steps('flowLogs').function.appServicePlanName]",
 				"siteName": "[steps('flowLogs').function.siteName]",
 				"functionStorageAccountName": "[steps('flowLogs').function.functionStorageAccountName]",
