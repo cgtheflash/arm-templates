@@ -572,7 +572,7 @@
                             "description": "Allow Application Gateway subnet to App Application Security Group",
                             "protocol": "Tcp",
                             "sourcePortRange": "*",
-                            "sourceAddressPrefixes": "[array(parameters('allowedSourceIpToMgmt'))]",
+                            "sourceAddressPrefixes": "[split(parameters('allowedSourceIpToMgmt'),',')]",
                             "destinationApplicationSecurityGroups": [
                                 {
                                     "id": "[resourceId('Microsoft.Network/applicationSecurityGroups',parameters('asgName'))]"
@@ -674,7 +674,7 @@
                             "access": "Allow",
                             "priority": 130,
                             "direction": "Inbound",
-                            "sourceAddressPrefixes": "[array(parameters('allowedSourceIpToMgmt'))]"
+                            "sourceAddressPrefixes": "[split(parameters('allowedSourceIpToMgmt'),',')]"
                         }
                     },
                     {
