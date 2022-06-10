@@ -825,7 +825,7 @@
 				"azureBastionAddress": "[steps('network').azureBastionNetwork.azureBastionAddress]",
 				"nsgName": "[steps('network').networkSecurityGroup.nsgName]",
 				"asgName": "[steps('network').networkSecurityGroup.asgName]",
-				"allowedSourceIpToMgmt": "[steps('network').managementNetworks.allowedSourceIpToMgmt.networkAddress]",
+				"allowedSourceIpToMgmt": "[steps('network').managementNetworks.allowedSourceIpToMgmt.networkAddress.networkAddress]",
 				"rvbdNetProfilerSize": "[steps('riverbed').netProfiler.rvbdNetProfilerSize]",
 				"rvbdNetProfilerName": "[steps('riverbed').netProfiler.rvbdNetProfilerName]",
 				"rvbdNetProfilerAdmin": "[steps('riverbed').netProfiler.rvbdNetProfilerAdmin]",
