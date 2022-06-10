@@ -421,26 +421,26 @@
 											}
 										]
 									}
+								},
+								{
+									"name": "allowedSourceIpToMgmt",
+									"type": "Microsoft.Common.TextBox",
+									"label": "Networks permitted to manage resources",
+									"defaultValue": "",
+									"toolTip": "Enter network addresses separated by commas that are permitted to manage resources in this deployment.",
+									"placeholder": "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16",
+									"constraints": {
+										"required": true,
+										"validations": [
+											{
+												"regex": "^[0-9.,/\n]{7,60}$",
+												"message": "Only 7-60 numeric characters, periods, commas, and forward slashes are allowed."
+											}
+										]
+									},
+									"visible": true
 								}
 							],
-							"visible": true
-						},
-						{
-							"name": "allowedSourceIpToMgmt",
-							"type": "Microsoft.Common.TextBox",
-							"label": "Networks permitted to manage resources",
-							"defaultValue": "",
-							"toolTip": "Enter network addresses separated by commas that are permitted to manage resources in this deployment.",
-							"placeholder": "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16",
-							"constraints": {
-								"required": true,
-								"validations": [
-									{
-										"regex": "^[0-9.,/\n]{7,60}$",
-										"message": "Only 7-60 numeric characters, periods, commas, and forward slashes are allowed."
-									}
-								]
-							},
 							"visible": true
 						}
 					]
