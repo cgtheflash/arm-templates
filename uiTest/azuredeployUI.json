@@ -813,7 +813,7 @@
 				"jumpboxOS": "[steps('management').jumpbox.jumpboxOS]",
 				"jumpboxSize": "[steps('management').jumpbox.jumpboxSize]",
 				"jumpboxAdmin": "[steps('management').jumpbox.jumpboxAdmin]",
-				"jumpboxAdminPassword": "[steps('management').jumpbox.jumpboxCredentials]",
+				"jumpboxAdminPassword": "[steps('management').jumpbox.jumpboxAdminPassword]",
 				"virtualNetworkName": "[steps('network').virtualNetwork.virtualNetworkName]",
 				"virtualNetworkAddress": "[steps('network').virtualNetwork.virtualNetworkAddress]",
 				"subnetGeneralName": "[steps('network').subnets.subnetGeneralName]",
