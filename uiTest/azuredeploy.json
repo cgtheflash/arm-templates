@@ -339,20 +339,11 @@
                 "description": "Enter between 1 and 5 characters. The region and a unique string will be appended to the end of the name."
             }
         },
-        "existingNsgFlowLogStorageAccountName": {
-            "defaultValue": "nsgfl",
+        "existingStorageAccountId": {
             "type": "String",
-            "minLength": 3,
-            "maxLength": 24,
+            "defaultValue": false,
             "metadata": {
-                "description": "Enter existing storage account name between 3 and 24 characters."
-            }
-        },
-        "existingStorageAccountResourceGroupName": {
-            "defaultValue": "existingResourceGroupName",
-            "type": "String",
-            "metadata": {
-                "description": "Enter the resource group name of the existing Storage Account. If making a new storage account leave the default value."
+                "description": "Enter resource ID of the existing storage account."
             }
         },
         "nsgFlowLogName": {
@@ -374,7 +365,8 @@
         "networkInterfaces_rvb_function_private_endpoint": "[concat(parameters('siteName'),'-private-endpoint')]",
         "functionStorageAccountName": "[concat(parameters('functionStorageAccountName'), uniqueString(resourceGroup().id) )]",
         "nsgFlowLogStorageAccountNameNew": "[concat(parameters('newNsgFlowLogStorageAccountName'), parameters('location'), uniqueString(resourceGroup().id) )]",
-        "nsgFlowLogStorageAccountResourceID": "[resourceId(if(equals(parameters('nsgFlowLogStorageAccount'),'new'), resourceGroup().name, parameters('existingStorageAccountResourceGroupName')),'Microsoft.Storage/storageAccounts', if(equals(parameters('nsgFlowLogStorageAccount'),'new'), variables('nsgFlowLogStorageAccountNameNew'), parameters('existingNsgFlowLogStorageAccountName')))]",
+        //"nsgFlowLogStorageAccountResourceID": "[resourceId(if(equals(parameters('nsgFlowLogStorageAccount'),'new'), resourceGroup().name, parameters('existingStorageAccountResourceGroupName')),'Microsoft.Storage/storageAccounts', if(equals(parameters('nsgFlowLogStorageAccount'),'new'), variables('nsgFlowLogStorageAccountNameNew'), parameters('existingNsgFlowLogStorageAccountName')))]",
+        "nsgFlowLogStorageAccountResourceID": "[if(equals(parameters('nsgFlowLogStorageAccount'),'new'),resourceId(resourceGroup().name,'Microsoft.Storage/storageAccounts',variables('nsgFlowLogStorageAccountNameNew')),parameters('existingStorageAccountId'))]",
         "networkWatcherName": "[concat('NetworkWatcher_', parameters('location'))]",
         "rvbdNetProfilerOsDiskType": "Premium_LRS",
         "rvbdFlowGatewayOsDiskType": "Premium_LRS"
@@ -1516,7 +1508,7 @@
             }
         },
         {
-            "comments": "NSG Flow Log deployment. Only gets deployed if 'new' NSG Flow Log Storage Account is required based on parameter selection.",
+            "comments": "NSG Flow Log deployment.",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
             "name": "deployFlowLogs",
