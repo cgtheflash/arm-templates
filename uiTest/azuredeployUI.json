@@ -151,7 +151,7 @@
 									"type": "Microsoft.Common.TextBox",
 									"label": "Jumpbox Hostname",
 									"toolTip": "Enter a hostname for the Jumpbox.",
-									"defaultValue": "rvbd-jumpbox",
+									"defaultValue": "rvbdjumpbox",
 									"constraints": {
 										"required": true,
 										"validations": [
@@ -426,7 +426,7 @@
 									"name": "allowedSourceIpToMgmt",
 									"type": "Microsoft.Common.TextBox",
 									"label": "Networks permitted to manage resources",
-									"defaultValue": "",
+									"defaultValue": "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16",
 									"toolTip": "Enter network addresses separated by commas that are permitted to manage resources in this deployment.",
 									"placeholder": "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16",
 									"constraints": {
