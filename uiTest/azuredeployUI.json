@@ -788,7 +788,7 @@
 				"jumpboxOS": "[steps('management').jumpbox.jumpboxOS]",
 				"jumpboxSize": "[steps('management').jumpbox.jumpboxSize]",
 				"jumpboxAdmin": "[steps('management').jumpbox.jumpboxAdmin]",
-				"jumpboxAdminPassword": "[steps('management').jumpbox.jumpboxAdminPassword]",
+				"jumpboxAdminPassword": "[steps('management').jumpbox.jumpboxAdminPassword.password]",
 				"virtualNetworkName": "[steps('network').virtualNetwork.virtualNetworkName]",
 				"virtualNetworkAddress": "[steps('network').virtualNetwork.virtualNetworkAddress]",
 				"subnetGeneralName": "[steps('network').subnets.subnetGeneralName]",
