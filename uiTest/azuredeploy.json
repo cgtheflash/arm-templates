@@ -341,7 +341,7 @@
         },
         "existingStorageAccountId": {
             "type": "String",
-            "defaultValue": false,
+            "defaultValue": "",
             "metadata": {
                 "description": "Enter resource ID of the existing storage account."
             }
@@ -365,7 +365,6 @@
         "networkInterfaces_rvb_function_private_endpoint": "[concat(parameters('siteName'),'-private-endpoint')]",
         "functionStorageAccountName": "[concat(parameters('functionStorageAccountName'), uniqueString(resourceGroup().id) )]",
         "nsgFlowLogStorageAccountNameNew": "[concat(parameters('newNsgFlowLogStorageAccountName'), parameters('location'), uniqueString(resourceGroup().id) )]",
-        //"nsgFlowLogStorageAccountResourceID": "[resourceId(if(equals(parameters('nsgFlowLogStorageAccount'),'new'), resourceGroup().name, parameters('existingStorageAccountResourceGroupName')),'Microsoft.Storage/storageAccounts', if(equals(parameters('nsgFlowLogStorageAccount'),'new'), variables('nsgFlowLogStorageAccountNameNew'), parameters('existingNsgFlowLogStorageAccountName')))]",
         "nsgFlowLogStorageAccountResourceID": "[if(equals(parameters('nsgFlowLogStorageAccount'),'new'),resourceId(resourceGroup().name,'Microsoft.Storage/storageAccounts',variables('nsgFlowLogStorageAccountNameNew')),parameters('existingStorageAccountId'))]",
         "networkWatcherName": "[concat('NetworkWatcher_', parameters('location'))]",
         "rvbdNetProfilerOsDiskType": "Premium_LRS",
