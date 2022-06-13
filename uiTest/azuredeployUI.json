@@ -761,13 +761,12 @@
 							"label": "Existing Flow Logs Storage Account Configuration",
 							"elements": [
 								{
-									"name": "existingNsgFlowLogStorageAccountName",
+									"name": "existingNsgFlowLogStorageAccount",
 									"type": "Microsoft.Solutions.ResourceSelector",
 									"label": "Select a storage account",
 									"resourceType": "Microsoft.Storage/storageAccounts",
 									"options": {
 										"filter": {
-											"subscription": "onBasics",
 											"location": "onBasics"
 										}
 									}
@@ -815,8 +814,7 @@
 				"nsgFlowLogName": "[steps('flowLogs').nsgFlowLog.nsgFlowLogName]",
 				"nsgFlowLogStorageAccount": "[steps('flowLogs').nsgFlowLog.nsgFlowLogStorageAccount]",
 				"newNsgFlowLogStorageAccountName": "[steps('flowLogs').newNsgFlowLogStorageAccount.newNsgFlowLogStorageAccountName]",
-				"existingNsgFlowLogStorageAccountName": "[steps('flowLogs').existingNsgFlowLogStorageAccount.existingNsgFlowLogStorageAccountName.name]",
-				"existingStorageAccountResourceGroupName": "[steps('flowLogs').existingNsgFlowLogStorageAccount.existingNsgFlowLogStorageAccountName.resourceGroup]"
+				"existingStorageAccountId": "[steps('flowLogs').existingNsgFlowLogStorageAccount.existingStorageAccount.id]"
 			},
 			"kind": "ResourceGroup",
 			"location": "[steps('basics').resourceScope.location.name]",
